@@ -1,39 +1,39 @@
 {
   "project_info": {
-    "project_number": "584610501442",
-    "firebase_url": "https://carissima-10958.firebaseio.com",
-    "project_id": "carissima-10958",
-    "storage_bucket": "carissima-10958.appspot.com"
+    "project_number": "703197070948",
+    "firebase_url": "https://firsttrial-a9d38.firebaseio.com",
+    "project_id": "firsttrial-a9d38",
+    "storage_bucket": "firsttrial-a9d38.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:584610501442:android:8ef82bce2d44c7bb",
+        "mobilesdk_app_id": "1:703197070948:android:64e58dacc0483faa",
         "android_client_info": {
-          "package_name": "rong.carissima"
+          "package_name": "com.google.firebase.udacity.friendlychat"
         }
       },
       "oauth_client": [
         {
-          "client_id": "584610501442-34k4ase1bcpv2fn3dajdql86rbe0dtp4.apps.googleusercontent.com",
+          "client_id": "703197070948-8jkbsnoc3bpml72jfrp1qeqd7f2lt44r.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "rong.carissima",
+            "package_name": "com.google.firebase.udacity.friendlychat",
             "certificate_hash": "ba8d1ddb0a330d50b386a099cc8a31a965e55314"
           }
         },
         {
-          "client_id": "584610501442-strbs3vk63pb3nqnuiegqnbukco0tqa7.apps.googleusercontent.com",
+          "client_id": "703197070948-id5vhe8a63v2ertbuef2mcd1g26obhfo.apps.googleusercontent.com",
           "client_type": 3
         },
         {
-          "client_id": "584610501442-strbs3vk63pb3nqnuiegqnbukco0tqa7.apps.googleusercontent.com",
+          "client_id": "703197070948-id5vhe8a63v2ertbuef2mcd1g26obhfo.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBiTLoQ2dHBy85MTDG-9Kqq65HV8Ocyulk"
+          "current_key": "AIzaSyBY5LPo0OrQDAhMQtVnxAWqHrIgivJ14ZQ"
         }
       ],
       "services": {
@@ -44,7 +44,55 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "584610501442-strbs3vk63pb3nqnuiegqnbukco0tqa7.apps.googleusercontent.com",
+              "client_id": "703197070948-id5vhe8a63v2ertbuef2mcd1g26obhfo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:703197070948:android:8ef82bce2d44c7bb",
+        "android_client_info": {
+          "package_name": "rong.carissima"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "703197070948-gg094gnv17hnm3j7357655dars72kajt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "rong.carissima",
+            "certificate_hash": "ba8d1ddb0a330d50b386a099cc8a31a965e55314"
+          }
+        },
+        {
+          "client_id": "703197070948-id5vhe8a63v2ertbuef2mcd1g26obhfo.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "703197070948-id5vhe8a63v2ertbuef2mcd1g26obhfo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBY5LPo0OrQDAhMQtVnxAWqHrIgivJ14ZQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "703197070948-id5vhe8a63v2ertbuef2mcd1g26obhfo.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

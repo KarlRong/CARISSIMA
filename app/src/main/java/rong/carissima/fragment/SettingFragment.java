@@ -21,6 +21,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.firebase.ui.auth.AuthUI;
+
 import rong.carissima.R;
 import rong.carissima.activity.AboutActivity;
 import rong.carissima.activity.SettingActivity;
@@ -98,7 +100,8 @@ public class SettingFragment extends BaseFragment implements OnClickListener, On
 
 
 	private void logout() {
-		context.finish();
+//		context.finish();
+        AuthUI.getInstance().signOut(this.getActivity());
 	}
 
 
@@ -157,7 +160,7 @@ public class SettingFragment extends BaseFragment implements OnClickListener, On
 				toActivity(AboutActivity.createIntent(context));
 				break;
 			case R.id.llSettingLogout:
-				new AlertDialog(context, "退出登录", "确定退出登录？", true, 0, this).show();
+                new AlertDialog(context, "退出登录", "确定退出登录？", true, 0, this).show();
 				break;
 			default:
 				break;

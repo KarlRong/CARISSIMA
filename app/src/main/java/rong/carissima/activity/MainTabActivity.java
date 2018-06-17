@@ -17,9 +17,19 @@ package rong.carissima.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
+import android.widget.Toast;
+
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import rong.carissima.DEMO.DemoTabFragment;
 import rong.carissima.R;
@@ -56,6 +66,13 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 		return this; //必须return this;
 	}
 
+    public static final String ANONYMOUS = "anonymous";
+	private FirebaseAuth mFirebaseAuth;
+	private FirebaseAuth.AuthStateListener mAuthStateListener;
+    public static final int RC_SIGN_IN = 1;
+
+	private String mUsername;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -68,9 +85,22 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 		//功能归类分区方法，必须调用>>>>>>>>>>
 	}
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mAuthStateListener != null) {
+            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        }
+    }
 
 
-	// UI显示区(操作UI，但不存在数据获取或处理代码，也不存在事件监听代码)<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    // UI显示区(操作UI，但不存在数据获取或处理代码，也不存在事件监听代码)<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 	private DemoTabFragment demoTabFragment;
@@ -150,6 +180,8 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 	public void initData() {// 必须调用
 		super.initData();
 
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mUsername = ANONYMOUS;
 	}
 
 
@@ -171,6 +203,28 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 	public void initEvent() {// 必须调用
 		super.initEvent();
 
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    onSignedInInitialize(user.getDisplayName());
+                } else {
+                    // User is signed out
+                    onSignedOutCleanup();
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setIsSmartLockEnabled(false)
+                                    .setProviders(
+                                            AuthUI.EMAIL_PROVIDER,
+                                            AuthUI.GOOGLE_PROVIDER)
+                                    .build(),
+                            RC_SIGN_IN);
+                }
+            }
+        };
 	}
 
 	@Override
@@ -194,6 +248,22 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 
 
 	// 系统自带监听方法<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Toast.makeText(this, "activityresult called!", Toast.LENGTH_SHORT).show();
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
+                // Sign-in succeeded, set up the UI
+                Toast.makeText(this, "Signed in!", Toast.LENGTH_SHORT).show();
+            } else if (resultCode == RESULT_CANCELED) {
+                // Sign in was canceled by the user, finish the activity
+                Toast.makeText(this, "Sign in canceled", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+    }
 
 	//双击手机返回键退出<<<<<<<<<<<<<<<<<<<<<
 	private long firstTime = 0;//第一次返回按钮计时
@@ -232,4 +302,12 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 
 	// 内部类,尽量少用>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+     // 自定义方法>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+     private void onSignedInInitialize(String username) {
+         mUsername = username;
+     }
+
+    private void onSignedOutCleanup() {
+        mUsername = ANONYMOUS;
+    }
 }
