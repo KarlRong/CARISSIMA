@@ -4,7 +4,7 @@
 
     <RelativeLayout
         android:id="@+id/rlBottomTabTopbar"
-        style="@style/topbar_bg" >
+        style="@style/topbar_bg">
 
         <TextView
             style="@style/topbar_title"
@@ -23,60 +23,65 @@
     <LinearLayout
         style="@style/ll_horizontal_match_wrap"
         android:layout_height="@dimen/topbar_height"
-        android:background="@color/alpha_6" >
+        android:background="@color/pink"
+        android:paddingTop="4dp">
 
         <LinearLayout
             android:id="@+id/llBottomTabTab0"
             style="@style/bottom_tab_ll"
-            android:layout_weight="1" >
+            android:layout_weight="1"
+            android:alpha="@dimen/alpha_button">
 
             <ImageView
                 android:id="@+id/ivBottomTabTab0"
                 style="@style/bottom_tab_iv"
-                android:src="@drawable/earth_selector" />
+                android:src="@drawable/service_seletor" />
 
             <TextView
                 android:id="@+id/tvBottomTabTab0"
                 style="@style/bottom_tab_tv"
-                android:text="主页" />
+                android:text="Service" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/llBottomTabTab1"
             style="@style/bottom_tab_ll"
-            android:layout_weight="1" >
+            android:layout_weight="1"
+            android:alpha="@dimen/alpha_button">
 
             <ImageView
                 android:id="@+id/ivBottomTabTab1"
                 style="@style/bottom_tab_iv"
-                android:src="@drawable/mail_selector" />
+                android:src="@drawable/map_selector" />
 
             <TextView
                 android:id="@+id/tvBottomTabTab1"
                 style="@style/bottom_tab_tv"
-                android:text="消息" />
+                android:text="Map" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/llBottomTabTab2"
             style="@style/bottom_tab_ll"
-            android:layout_weight="1" >
+            android:layout_weight="1"
+            android:alpha="@dimen/alpha_button">
 
             <ImageView
                 android:id="@+id/ivBottomTabTab2"
                 style="@style/bottom_tab_iv"
-                android:src="@drawable/search_selector" />
+                android:src="@drawable/contacts_selector" />
 
             <TextView
                 android:id="@+id/tvBottomTabTab2"
                 style="@style/bottom_tab_tv"
-                android:text="发现" />
+                android:text="Contacts" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/llBottomTabTab3"
             style="@style/bottom_tab_ll"
-            android:layout_weight="1" >
+            android:layout_weight="1"
+            android:alpha="@dimen/alpha_button">
 
             <ImageView
                 android:id="@+id/ivBottomTabTab3"
@@ -86,7 +91,7 @@
             <TextView
                 android:id="@+id/tvBottomTabTab3"
                 style="@style/bottom_tab_tv"
-                android:text="设置" />
+                android:text="Settings" />
         </LinearLayout>
     </LinearLayout>
 

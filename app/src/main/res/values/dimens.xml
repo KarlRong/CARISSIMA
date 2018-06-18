@@ -2,5 +2,5 @@
 <resources>
 
     <dimen name="qrcode_size">200dp</dimen>
-
+    <item name="alpha_button" format="float" type="dimen">0.7</item>
 </resources>

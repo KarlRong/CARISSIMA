@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class ServiceFragment extends BaseFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		//TODO demo_fragment改为你所需要的layout文件
-		setContentView(R.layout.demo_fragment);
+		setContentView(R.layout.service_fragment);
 
 		argument = getArguments();
 		if (argument != null) {
@@ -94,13 +95,13 @@ public class ServiceFragment extends BaseFragment {
 	//UI显示区(操作UI，但不存在数据获取或处理代码，也不存在事件监听代码)<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 	//示例代码<<<<<<<<
-	private ListView lvDemoFragment;
+	private Button btActiveService;
 	//示例代码>>>>>>>>
 	@Override
 	public void initView() {//必须在onCreateView方法内调用
 
 		//示例代码<<<<<<<<<<<<<<
-		lvDemoFragment = findView(R.id.lvDemoFragment);
+		btActiveService = findView(R.id.bt_activeService);
 		//示例代码>>>>>>>>>>>>>>
 	}
 

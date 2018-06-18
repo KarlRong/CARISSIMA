@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+<string name="service_background">background image of service fragment</string>
+    <string name="touch_here_to_active_the_device"> </string>
 </resources>
