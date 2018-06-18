@@ -31,8 +31,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import rong.carissima.DEMO.DemoFragment;
 import rong.carissima.DEMO.DemoTabFragment;
 import rong.carissima.R;
+import rong.carissima.fragment.ServiceFragment;
 import rong.carissima.fragment.SettingFragment;
 import rong.carissima.fragment.UserListFragment;
 import rong.carissima.fragment.UserRecyclerFragment;
@@ -141,7 +143,8 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 		case 3:
 			return SettingFragment.createInstance();
 		default:
-			return UserListFragment.createInstance(UserListFragment.RANGE_ALL);
+//			return UserListFragment.createInstance(UserListFragment.RANGE_ALL);
+            return ServiceFragment.createInstance(false);
 		}
 	};
 
