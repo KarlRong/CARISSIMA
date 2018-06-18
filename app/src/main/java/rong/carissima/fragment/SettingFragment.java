@@ -69,12 +69,9 @@ public class SettingFragment extends BaseFragment implements OnClickListener, On
 
 
 	//UI显示区(操作UI，但不存在数据获取或处理代码，也不存在事件监听代码)<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-	private ImageView ivSettingHead;
-	@Override
+    @Override
 	public void initView() {//必须调用
 
-		ivSettingHead = findView(R.id.ivSettingHead);
 	}
 
 
@@ -119,8 +116,6 @@ public class SettingFragment extends BaseFragment implements OnClickListener, On
 	@Override
 	public void initEvent() {//必须调用
 
-		ivSettingHead.setOnClickListener(this);
-
 		findView(R.id.llSettingSetting).setOnClickListener(this);
 		findView(R.id.llSettingAbout).setOnClickListener(this);
 		findView(R.id.llSettingLogout).setOnClickListener(this);
@@ -150,9 +145,6 @@ public class SettingFragment extends BaseFragment implements OnClickListener, On
 	@Override
 	public void onClick(View v) {//直接调用不会显示v被点击效果
 		switch (v.getId()) {
-			case R.id.ivSettingHead:
-				showShortToast("onClick  ivSettingHead");
-				break;
 			case R.id.llSettingSetting:
 				toActivity(SettingActivity.createIntent(context));
 				break;
