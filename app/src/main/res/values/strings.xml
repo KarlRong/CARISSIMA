@@ -2,4 +2,5 @@
 <resources>
 <string name="service_background">background image of service fragment</string>
     <string name="touch_here_to_active_the_device"> </string>
+    <string name="mapbox_token">pk.eyJ1Ijoic2p0dXJqayIsImEiOiJjamlobWlqbHcwZ3AxM3ZwZmxyeXUwY2I1In0.MSDJjBLnoyjMGkdPjaL2_Q</string>
 </resources>

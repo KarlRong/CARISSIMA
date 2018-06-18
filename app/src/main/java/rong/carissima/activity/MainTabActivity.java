@@ -198,6 +198,10 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mUsername = ANONYMOUS;
+
+		// Mapbox Access token
+//		Mapbox.getInstance(getApplicationContext(), this.getString(R.string.mapbox_token));
+
 	}
 
 

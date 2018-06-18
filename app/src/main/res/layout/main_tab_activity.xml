@@ -9,7 +9,8 @@
         <TextView
             style="@style/topbar_title"
             android:layout_centerHorizontal="true"
-            android:text="主页" />
+            android:text="主页"
+            android:textColor="@color/white" />
     </RelativeLayout>
 
     <FrameLayout
@@ -23,7 +24,7 @@
     <LinearLayout
         style="@style/ll_horizontal_match_wrap"
         android:layout_height="@dimen/bottombar_height"
-        android:background="#e34646"
+        android:background="@color/topbar_bg"
         android:paddingTop="4dp">
 
         <LinearLayout

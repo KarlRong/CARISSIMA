@@ -8,17 +8,9 @@
 
         <LinearLayout style="@style/ll_vertical_match_match" >
 
-            <ImageView
-                android:id="@+id/ivSettingHead"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
-                android:layout_margin="@dimen/item_distance"
-                android:scaleType="centerCrop"
-                android:src="@drawable/default_head" />
-
             <View
                 style="@style/divider_horizontal_1px"
-                android:layout_marginTop="30dp" />
+                android:layout_marginTop="8dp" />
 
             <LinearLayout
                 android:id="@+id/llSettingSetting"
