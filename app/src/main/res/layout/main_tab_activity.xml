@@ -22,8 +22,8 @@
 
     <LinearLayout
         style="@style/ll_horizontal_match_wrap"
-        android:layout_height="@dimen/topbar_height"
-        android:background="@color/pink"
+        android:layout_height="@dimen/bottombar_height"
+        android:background="#e34646"
         android:paddingTop="4dp">
 
         <LinearLayout

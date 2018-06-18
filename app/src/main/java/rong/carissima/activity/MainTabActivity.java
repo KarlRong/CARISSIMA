@@ -17,29 +17,30 @@ package rong.carissima.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.KeyEvent;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import rong.carissima.DEMO.DemoFragment;
 import rong.carissima.DEMO.DemoTabFragment;
 import rong.carissima.R;
+import rong.carissima.fragment.MapFragment;
 import rong.carissima.fragment.ServiceFragment;
 import rong.carissima.fragment.SettingFragment;
 import rong.carissima.fragment.UserListFragment;
 import rong.carissima.fragment.UserRecyclerFragment;
 import zuo.biao.library.base.BaseBottomTabActivity;
 import zuo.biao.library.interfaces.OnBottomDragListener;
+import zuo.biao.library.manager.SystemBarTintManager;
 
 /**应用主页
  * @author Lemon
@@ -78,7 +79,7 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main_tab_activity, this);
+        setContentView(R.layout.main_tab_activity, this);
 
 		//功能归类分区方法，必须调用<<<<<<<<<<
 		initView();
@@ -111,7 +112,18 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 		super.initView();
 		exitAnim = R.anim.bottom_push_out;
 
-		demoTabFragment = DemoTabFragment.createInstance("杭州");
+        Window window = this.getWindow();
+
+//        // clear FLAG_TRANSLUCENT_STATUS flag:
+//        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//
+////        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+////        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+////
+////        // finally change the color
+//        window.setStatusBarColor(ContextCompat.getColor(this,R.color.topbar_bg));
+
+        demoTabFragment = DemoTabFragment.createInstance("杭州");
 	}
 
 
@@ -137,9 +149,10 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 	protected Fragment getFragment(int position) {
 		switch (position) {
 		case 1:
-			return UserRecyclerFragment.createInstance(UserListFragment.RANGE_RECOMMEND);
+			return MapFragment.createInstance();
 		case 2:
-			return demoTabFragment;
+		    return UserRecyclerFragment.createInstance(UserListFragment.RANGE_RECOMMEND);
+//			return demoTabFragment;
 		case 3:
 			return SettingFragment.createInstance();
 		default:
@@ -148,7 +161,7 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 		}
 	};
 
-	private static final String[] TAB_NAMES = {"Service", "Map", "Contact", "Settings"};
+	private static final String[] TAB_NAMES = {"Carissima", "Map", "Contact", "Settings"};
 	@Override
 	protected void selectTab(int position) {
 		//导致切换时闪屏，建议去掉BottomTabActivity中的topbar，在fragment中显示topbar

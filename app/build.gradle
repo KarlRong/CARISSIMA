@@ -36,6 +36,10 @@ dependencies {
     // FirebaseUI
     compile 'com.firebaseui:firebase-ui-auth:0.6.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
+
+    compile 'com.google.android.gms:play-services-maps:9.6.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
