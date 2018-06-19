@@ -20,6 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.maps.MapView;
+
 import java.util.List;
 
 import rong.carissima.R;
@@ -57,8 +60,15 @@ public class MapFragment extends BaseFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
+
+		Mapbox.getInstance(getContext(), this.getString(R.string.mapbox_token));
+
 		//TODO demo_fragment改为你所需要的layout文件
 		setContentView(R.layout.map_fragment);
+
+        mapView = (MapView) findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+        mapView.onStart();
 
 		//功能归类分区方法，必须调用<<<<<<<<<<
 		initView();
@@ -74,14 +84,14 @@ public class MapFragment extends BaseFragment {
 
 	//示例代码<<<<<<<<
 	private Button btActiveService;
+    private MapView mapView;
 
 	//示例代码>>>>>>>>
 	@Override
 	public void initView() {//必须在onCreateView方法内调用
 
 		//示例代码<<<<<<<<<<<<<<
-
-		//示例代码>>>>>>>>>>>>>>
+ 		//示例代码>>>>>>>>>>>>>>
 	}
 
 	//UI显示区(操作UI，但不存在数据获取或处理代码，也不存在事件监听代码)>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -161,7 +171,41 @@ public class MapFragment extends BaseFragment {
 	//类相关监听>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 	//系统自带监听>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mapView.onStop();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
 
 	//Event事件区(只要存在事件监听代码就是)>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
