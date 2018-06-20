@@ -36,8 +36,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
-//import android.support.v4.app.FragmentManager;
-import android.app.FragmentManager;
+import android.support.v4.app.FragmentManager;
+//import android.app.FragmentManager;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
@@ -97,7 +97,7 @@ public abstract class BaseActivity extends FragmentActivity implements ActivityP
 
 		context = (BaseActivity) getActivity();
 		isAlive = true;
-		fragmentManager = getFragmentManager();
+		fragmentManager = getSupportFragmentManager();
 
 		inflater = getLayoutInflater();
 
