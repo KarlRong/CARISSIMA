@@ -17,6 +17,7 @@ package rong.carissima.fragment;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LifecycleRegistry;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -25,14 +26,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.mapbox.android.core.location.LocationEngine;
+import com.mapbox.android.core.location.LocationEngineListener;
+
+import com.mapbox.android.core.location.LocationEnginePriority;
+import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerPlugin;
 import com.mapbox.mapboxsdk.plugins.locationlayer.modes.CameraMode;
+import com.mapbox.mapboxsdk.plugins.locationlayer.modes.RenderMode;
 
 import java.util.List;
 
@@ -48,7 +57,7 @@ import zuo.biao.library.model.Entry;
  * @use new DemoFragment(),具体参考.DemoFragmentActivity(initData方法内)
  */
 public class MapFragment extends BaseFragment implements
-		OnMapReadyCallback, PermissionsListener, LifecycleOwner {
+		OnMapReadyCallback, PermissionsListener, LifecycleOwner, LocationEngineListener {
 	private static final String TAG = "MapFragment";
 
 	//与Activity通信<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -99,6 +108,9 @@ public class MapFragment extends BaseFragment implements
     private MapView mapView;
     private PermissionsManager permissionsManager;
     private MapboxMap mapboxMap;
+    private LocationLayerPlugin locationPlugin;
+    private LocationEngine locationEngine;
+    private Location originLocation;
 	//示例代码>>>>>>>>
 	@Override
 	public void initView() {//必须在onCreateView方法内调用
@@ -182,21 +194,40 @@ public class MapFragment extends BaseFragment implements
     private void enableLocationPlugin() {
         // Check if permissions are enabled and if not request
         if (PermissionsManager.areLocationPermissionsGranted(getContext())) {
-
+            initializeLocationEngine();
             // Create an instance of the plugin. Adding in LocationLayerOptions is also an optional
             // parameter
-            LocationLayerPlugin locationLayerPlugin = new LocationLayerPlugin(mapView, mapboxMap);
+            locationPlugin = new LocationLayerPlugin(mapView, mapboxMap, locationEngine);
+            locationPlugin.setRenderMode(RenderMode.COMPASS);
 
             // Set the plugin's camera mode
-            locationLayerPlugin.setCameraMode(CameraMode.TRACKING);
-            mLifecycleRegistry.markState(Lifecycle.State.STARTED);
-            getLifecycle().addObserver(locationLayerPlugin);
+//            locationPlugin.setCameraMode(CameraMode.TRACKING);
+//            mLifecycleRegistry.markState(Lifecycle.State.STARTED);
+//            getLifecycle().addObserver(locationPlugin);
         } else {
             permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(getActivity());
         }
     }
+    @SuppressWarnings( {"MissingPermission"})
+    private void initializeLocationEngine() {
+        LocationEngineProvider locationEngineProvider = new LocationEngineProvider(getContext());
+        locationEngine = locationEngineProvider.obtainBestLocationEngineAvailable();
+        locationEngine.setPriority(LocationEnginePriority.HIGH_ACCURACY);
+        locationEngine.activate();
 
+        Location lastLocation = locationEngine.getLastLocation();
+        if (lastLocation != null) {
+            originLocation = lastLocation;
+            setCameraPosition(lastLocation);
+        } else {
+            locationEngine.addLocationEngineListener(this);
+        }
+    }
+    private void setCameraPosition(Location location) {
+        mapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(location.getLatitude(), location.getLongitude()), 13));
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -216,7 +247,20 @@ public class MapFragment extends BaseFragment implements
         }
     }
 
+    @Override
+    @SuppressWarnings( {"MissingPermission"})
+    public void onConnected() {
+        locationEngine.requestLocationUpdates();
+    }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        if (location != null) {
+            originLocation = location;
+            setCameraPosition(location);
+            locationEngine.removeLocationEngineListener(this);
+        }
+    }
 	//类相关监听>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 	//系统自带监听方法>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -229,6 +273,19 @@ public class MapFragment extends BaseFragment implements
 	//类相关监听>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 	//系统自带监听>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (locationEngine != null) {
+            locationEngine.requestLocationUpdates();
+        }
+        if (locationPlugin != null) {
+            locationPlugin.onStart();
+        }
+        mapView.onStart();
+        mLifecycleRegistry.markState(Lifecycle.State.STARTED);
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -245,6 +302,12 @@ public class MapFragment extends BaseFragment implements
     @Override
     public void onStop() {
         super.onStop();
+        if (locationEngine != null) {
+            locationEngine.removeLocationUpdates();
+        }
+        if (locationPlugin != null) {
+            locationPlugin.onStop();
+        }
         mapView.onStop();
     }
 
@@ -258,6 +321,9 @@ public class MapFragment extends BaseFragment implements
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+        if (locationEngine != null) {
+            locationEngine.deactivate();
+        }
         mLifecycleRegistry.markState(Lifecycle.State.DESTROYED);
     }
 
