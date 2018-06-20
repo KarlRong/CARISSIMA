@@ -49,7 +49,7 @@ import zuo.biao.library.model.Entry;
  */
 public class MapFragment extends BaseFragment implements
 		OnMapReadyCallback, PermissionsListener, LifecycleOwner {
-	private static final String TAG = "ServiceFragment";
+	private static final String TAG = "MapFragment";
 
 	//与Activity通信<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
@@ -203,7 +203,7 @@ public class MapFragment extends BaseFragment implements
     }
     @Override
     public void onExplanationNeeded(List<String> permissionsToExplain) {
-//        Toast.makeText(this, "user_location_permission_explanation", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "user_location_permission_explanation", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -211,7 +211,7 @@ public class MapFragment extends BaseFragment implements
         if (granted) {
             enableLocationPlugin();
         } else {
-//            Toast.makeText(this, "user_location_permission_not_granted", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "user_location_permission_not_granted", Toast.LENGTH_LONG).show();
             getActivity().finish();
         }
     }

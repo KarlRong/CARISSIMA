@@ -58,6 +58,8 @@ dependencies {
     // alternatively - Lifecycles only (no ViewModel or LiveData).
     //     Support library depends on this lightweight import
     implementation "android.arch.lifecycle:runtime:$lifecycle_version"
+
+
 }
 
 apply plugin: 'com.google.gms.google-services'
