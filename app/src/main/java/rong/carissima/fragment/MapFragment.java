@@ -14,14 +14,25 @@ limitations under the License.*/
 
 package rong.carissima.fragment;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LifecycleRegistry;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.mapbox.android.core.permissions.PermissionsListener;
+import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerPlugin;
+import com.mapbox.mapboxsdk.plugins.locationlayer.modes.CameraMode;
 
 import java.util.List;
 
@@ -36,7 +47,8 @@ import zuo.biao.library.model.Entry;
  * @author Lemon
  * @use new DemoFragment(),具体参考.DemoFragmentActivity(initData方法内)
  */
-public class MapFragment extends BaseFragment {
+public class MapFragment extends BaseFragment implements
+		OnMapReadyCallback, PermissionsListener, LifecycleOwner {
 	private static final String TAG = "ServiceFragment";
 
 	//与Activity通信<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -55,20 +67,21 @@ public class MapFragment extends BaseFragment {
 	//与Activity通信>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-
+    private LifecycleRegistry mLifecycleRegistry;
 	private boolean mServiceState = false;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 
-		Mapbox.getInstance(getContext(), this.getString(R.string.mapbox_token));
+		Mapbox.getInstance(container.getContext(), this.getString(R.string.mapbox_token));
 
 		//TODO demo_fragment改为你所需要的layout文件
 		setContentView(R.layout.map_fragment);
 
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
-        mapView.onStart();
+//        mapView.onStart();
+		mapView.getMapAsync(this);
 
 		//功能归类分区方法，必须调用<<<<<<<<<<
 		initView();
@@ -83,9 +96,9 @@ public class MapFragment extends BaseFragment {
 	//UI显示区(操作UI，但不存在数据获取或处理代码，也不存在事件监听代码)<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 	//示例代码<<<<<<<<
-	private Button btActiveService;
     private MapView mapView;
-
+    private PermissionsManager permissionsManager;
+    private MapboxMap mapboxMap;
 	//示例代码>>>>>>>>
 	@Override
 	public void initView() {//必须在onCreateView方法内调用
@@ -149,7 +162,8 @@ public class MapFragment extends BaseFragment {
 	@Override
 	public void initEvent() {//必须在onCreateView方法内调用
 		//示例代码<<<<<<<<<<<<<<<<<<<
-
+        mLifecycleRegistry = new LifecycleRegistry(this);
+        mLifecycleRegistry.markState(Lifecycle.State.CREATED);
 		//示例代码>>>>>>>>>>>>>>>>>>>
 	}
 
@@ -158,15 +172,59 @@ public class MapFragment extends BaseFragment {
 
 
 	//类相关监听<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    @Override
+    public void onMapReady(MapboxMap mapboxMap) {
+        this.mapboxMap = mapboxMap;
+        enableLocationPlugin();
+    }
 
+    @SuppressWarnings( {"MissingPermission"})
+    private void enableLocationPlugin() {
+        // Check if permissions are enabled and if not request
+        if (PermissionsManager.areLocationPermissionsGranted(getContext())) {
 
+            // Create an instance of the plugin. Adding in LocationLayerOptions is also an optional
+            // parameter
+            LocationLayerPlugin locationLayerPlugin = new LocationLayerPlugin(mapView, mapboxMap);
 
+            // Set the plugin's camera mode
+            locationLayerPlugin.setCameraMode(CameraMode.TRACKING);
+            mLifecycleRegistry.markState(Lifecycle.State.STARTED);
+            getLifecycle().addObserver(locationLayerPlugin);
+        } else {
+            permissionsManager = new PermissionsManager(this);
+            permissionsManager.requestLocationPermissions(getActivity());
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+    @Override
+    public void onExplanationNeeded(List<String> permissionsToExplain) {
+//        Toast.makeText(this, "user_location_permission_explanation", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onPermissionResult(boolean granted) {
+        if (granted) {
+            enableLocationPlugin();
+        } else {
+//            Toast.makeText(this, "user_location_permission_not_granted", Toast.LENGTH_LONG).show();
+            getActivity().finish();
+        }
+    }
 
 
 	//类相关监听>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 	//系统自带监听方法>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+    @NonNull
+    @Override
+    public Lifecycle getLifecycle() {
+        return mLifecycleRegistry;
+    }
 
 	//类相关监听>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -175,6 +233,7 @@ public class MapFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         mapView.onResume();
+        mLifecycleRegistry.markState(Lifecycle.State.RESUMED);
     }
 
     @Override
@@ -199,6 +258,7 @@ public class MapFragment extends BaseFragment {
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+        mLifecycleRegistry.markState(Lifecycle.State.DESTROYED);
     }
 
     @Override

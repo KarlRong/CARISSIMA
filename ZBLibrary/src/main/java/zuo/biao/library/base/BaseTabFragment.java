@@ -27,9 +27,12 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+//import android.support.v4.app.Fragment;
+import android.app.Fragment;
+//import android.support.v4.app.FragmentManager;
+import android.app.FragmentManager;
+//import android.support.v4.app.FragmentTransaction;
+import android.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,7 +92,7 @@ public abstract class BaseTabFragment extends BaseFragment implements ViewPresen
 		view = inflater.inflate(layoutResID <= 0 ? R.layout.base_tab_activity : layoutResID, container, false);
 		//类相关初始化，必须使用>>>>>>>>>>>>>>>>
 
-		fragmentManager = context.getSupportFragmentManager();
+		fragmentManager = context.getFragmentManager();
 
 		return view;
 	}
