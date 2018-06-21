@@ -33,6 +33,9 @@ import android.widget.Toast;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -90,13 +93,29 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.main_tab_activity, this);
 
+		checkPlayServices();
 		//功能归类分区方法，必须调用<<<<<<<<<<
 		initView();
 		initData();
 		initEvent();
 		//功能归类分区方法，必须调用>>>>>>>>>>
 	}
+	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+	private boolean checkPlayServices() {
+		GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+		int result = googleAPI.isGooglePlayServicesAvailable(this);
+		Log.i(TAG,"GooglePlayServiceAvailable: " + result);
+		if(result != ConnectionResult.SUCCESS) {
+			if(googleAPI.isUserResolvableError(result)) {
+				googleAPI.getErrorDialog(this, result,
+						PLAY_SERVICES_RESOLUTION_REQUEST).show();
+			}
 
+			return false;
+		}
+
+		return true;
+	}
     @Override
     protected void onResume() {
         super.onResume();
@@ -294,27 +313,45 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Toast.makeText(this, "activityresult called!", Toast.LENGTH_SHORT).show();
-        if (requestCode == RC_SIGN_IN) {
-            if (resultCode == RESULT_OK) {
-                // Sign-in succeeded, set up the UI
-                Toast.makeText(this, "Signed in!", Toast.LENGTH_SHORT).show();
-            } else if (resultCode == RESULT_CANCELED) {
-                // Sign in was canceled by the user, finish the activity
-                Toast.makeText(this, "Sign in canceled", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        }
+//        Toast.makeText(this, "activityresult called!", Toast.LENGTH_SHORT).show();
+//        if (requestCode == RC_SIGN_IN) {
+//            if (resultCode == RESULT_OK) {
+//                // Sign-in succeeded, set up the UI
+//                Toast.makeText(this, "Signed in!", Toast.LENGTH_SHORT).show();
+//            } else if (resultCode == RESULT_CANCELED) {
+//                // Sign in was canceled by the user, finish the activity
+//                Toast.makeText(this, "Sign in canceled", Toast.LENGTH_SHORT).show();
+//                finish();
+//            }
+//        }
+		Log.i(TAG,"activity result called");
+		if (requestCode == RC_SIGN_IN) {
+			IdpResponse response = IdpResponse.fromResultIntent(data);
+			Log.i(TAG,"activity result called");
+			// Successfully signed in
+			if (resultCode == RESULT_OK) {
+//				startActivity(MainTabActivity.createIntent(this));
+//				finish();
+//				startActivity(MainTabActivity.createIntent(context).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+				Log.i(TAG,"sign in successed");
+			} else {
+				// Sign in failed
+				if (response == null) {
+					// User pressed back button
+					Toast.makeText(this, "Sign in canceled", Toast.LENGTH_SHORT).show();
+					return;
+				}
+
+				if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
+					Toast.makeText(this, "NO NETWORK", Toast.LENGTH_SHORT).show();
+					return;
+				}
+
+				Toast.makeText(this, "Unkonwn Error", Toast.LENGTH_SHORT).show();
+				Log.i(TAG,"sign in failed");
+			}
+		}
     }
-//					Toast.makeText(this, "NO NETWORK", Toast.LENGTH_SHORT).show();
-//					return;
-//				}
-//
-//				Toast.makeText(this, "Unkonwn Error", Toast.LENGTH_SHORT).show();
-//				Log.i(TAG,"sign in failed");
-//			}
-//		}
-//    }
 
 	//双击手机返回键退出<<<<<<<<<<<<<<<<<<<<<
 	private long firstTime = 0;//第一次返回按钮计时
