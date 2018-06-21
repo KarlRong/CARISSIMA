@@ -15,6 +15,8 @@ limitations under the License.*/
 package rong.carissima.activity;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -29,8 +31,13 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.Arrays;
+import java.util.Set;
 
 import rong.carissima.DEMO.DemoTabFragment;
 import rong.carissima.R;
@@ -42,13 +49,14 @@ import rong.carissima.fragment.UserRecyclerFragment;
 import zuo.biao.library.base.BaseBottomTabActivity;
 import zuo.biao.library.interfaces.OnBottomDragListener;
 import zuo.biao.library.manager.SystemBarTintManager;
+import zuo.biao.library.util.Log;
 
 /**应用主页
  * @author Lemon
  * @use MainTabActivity.createIntent(...)
  */
 public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDragListener {
-	//	private static final String TAG = "MainTabActivity";
+		private static final String TAG = "MainTabActivity";
 
 
 	//启动方法<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -73,7 +81,7 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
     public static final String ANONYMOUS = "anonymous";
 	private FirebaseAuth mFirebaseAuth;
 	private FirebaseAuth.AuthStateListener mAuthStateListener;
-    public static final int RC_SIGN_IN = 1;
+    public static final int RC_SIGN_IN = 123;
 
 	private String mUsername;
 
@@ -112,17 +120,6 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 	public void initView() {// 必须调用
 		super.initView();
 		exitAnim = R.anim.bottom_push_out;
-
-        Window window = this.getWindow();
-
-//        // clear FLAG_TRANSLUCENT_STATUS flag:
-//        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//
-////        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
-////        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-////
-////        // finally change the color
-//        window.setStatusBarColor(ContextCompat.getColor(this,R.color.topbar_bg));
 
         demoTabFragment = DemoTabFragment.createInstance("杭州");
 	}
@@ -192,7 +189,10 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 
 
 
-
+	public BluetoothAdapter mBluetoothAdapter;
+	public static final int REQUEST_ENABLE_BT = 2;
+	public static final String SHUTTER_NAME = "AB Shutter3";
+	public String mShutterAddress;
 	@Override
 	public void initData() {// 必须调用
 		super.initData();
@@ -200,9 +200,30 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
         mFirebaseAuth = FirebaseAuth.getInstance();
         mUsername = ANONYMOUS;
 
-		// Mapbox Access token
-//		Mapbox.getInstance(getApplicationContext(), this.getString(R.string.mapbox_token));
+		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		if (mBluetoothAdapter == null) {
+			// Device does not support Bluetooth
+		}
+		if (!mBluetoothAdapter.isEnabled()) {
+			Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+		}
 
+		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+		// If there are paired devices
+		if (pairedDevices.size() > 0) {
+			// Loop through paired devices
+			for (BluetoothDevice device : pairedDevices) {
+				// Add the name and address to an array adapter to show in a ListView
+				Log.i(TAG, device.getName() + "\n" + device.getAddress());
+				if(device.getName() == SHUTTER_NAME){
+					mShutterAddress = device.getAddress();
+				}
+			}
+		}
+		else{
+			Log.i(TAG, "Bluetooth device not found");
+		}
 	}
 
 
@@ -235,14 +256,14 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
                     // User is signed out
                     onSignedOutCleanup();
                     startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setIsSmartLockEnabled(false)
-                                    .setProviders(
-                                            AuthUI.EMAIL_PROVIDER,
-                                            AuthUI.GOOGLE_PROVIDER)
-                                    .build(),
-                            RC_SIGN_IN);
+							AuthUI.getInstance()
+									.createSignInIntentBuilder()
+									.setIsSmartLockEnabled(false)
+									.setAvailableProviders(Arrays.asList(
+											new AuthUI.IdpConfig.EmailBuilder().build(),
+											new AuthUI.IdpConfig.GoogleBuilder().build()))
+									.build(),
+							RC_SIGN_IN);
                 }
             }
         };
@@ -285,6 +306,15 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
             }
         }
     }
+//					Toast.makeText(this, "NO NETWORK", Toast.LENGTH_SHORT).show();
+//					return;
+//				}
+//
+//				Toast.makeText(this, "Unkonwn Error", Toast.LENGTH_SHORT).show();
+//				Log.i(TAG,"sign in failed");
+//			}
+//		}
+//    }
 
 	//双击手机返回键退出<<<<<<<<<<<<<<<<<<<<<
 	private long firstTime = 0;//第一次返回按钮计时
@@ -316,7 +346,100 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 
 
 	// Event事件区(只要存在事件监听代码就是)>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		printToast(parseKeyCode(keyCode));
+		return true;
+	}
 
+	public String parseKeyCode(int keyCode) {
+		String ret = "";
+		switch (keyCode) {
+			case KeyEvent.KEYCODE_POWER:
+				// 监控/拦截/屏蔽电源键 这里拦截不了
+				ret = "get Key KEYCODE_POWER(KeyCode:" + keyCode + ")";
+				break;
+			case KeyEvent.KEYCODE_RIGHT_BRACKET:
+				// 监控/拦截/屏蔽返回键
+				ret = "get Key KEYCODE_RIGHT_BRACKET";
+				break;
+			case KeyEvent.KEYCODE_MENU:
+				// 监控/拦截菜单键
+				ret = "get Key KEYCODE_MENU";
+				break;
+			case KeyEvent.KEYCODE_HOME:
+				// 由于Home键为系统键，此处不能捕获
+				ret = "get Key KEYCODE_HOME";
+				break;
+			case KeyEvent.KEYCODE_DPAD_UP:
+				// 监控/拦截/屏蔽上方向键
+				ret = "get Key KEYCODE_DPAD_UP";
+				break;
+			case KeyEvent.KEYCODE_DPAD_LEFT:
+				// 监控/拦截/屏蔽左方向键
+				ret = "get Key KEYCODE_DPAD_LEFT";
+				break;
+			case KeyEvent.KEYCODE_DPAD_RIGHT:
+				// 监控/拦截/屏蔽右方向键
+				ret = "get Key KEYCODE_DPAD_RIGHT";
+				break;
+			case KeyEvent.KEYCODE_DPAD_DOWN:
+				// 监控/拦截/屏蔽下方向键
+				ret = "get Key KEYCODE_DPAD_DOWN";
+				break;
+			case KeyEvent.KEYCODE_DPAD_CENTER:
+				// 监控/拦截/屏蔽中方向键
+				ret = "get Key KEYCODE_DPAD_CENTER";
+				break;
+			case KeyEvent.FLAG_KEEP_TOUCH_MODE:
+				// 监控/拦截/屏蔽长按
+				ret = "get Key FLAG_KEEP_TOUCH_MODE";
+				break;
+			case KeyEvent.KEYCODE_VOLUME_DOWN:
+				// 监控/拦截/屏蔽下方向键
+				ret = "get Key KEYCODE_VOLUME_DOWN(KeyCode:" + keyCode + ")";
+				break;
+			case KeyEvent.KEYCODE_VOLUME_UP://Shutter 提供
+				// 监控/拦截/屏蔽中方向键
+				ret = "get Key KEYCODE_VOLUME_UP(KeyCode:" + keyCode + ")";
+				break;
+			case 220:
+				// case KeyEvent.KEYCODE_BRIGHTNESS_DOWN:
+				// 监控/拦截/屏蔽亮度减键
+				ret = "get Key KEYCODE_BRIGHTNESS_DOWN(KeyCode:" + keyCode + ")";
+				break;
+			case 221:
+				// case KeyEvent.KEYCODE_BRIGHTNESS_UP:
+				// 监控/拦截/屏蔽亮度加键
+				ret = "get Key KEYCODE_BRIGHTNESS_UP(KeyCode:" + keyCode + ")";
+				break;
+			case KeyEvent.KEYCODE_MEDIA_PLAY:
+				ret = "get Key KEYCODE_MEDIA_PLAY(KeyCode:" + keyCode + ")";
+				break;
+			case KeyEvent.KEYCODE_MEDIA_PAUSE:
+				ret = "get Key KEYCODE_MEDIA_PAUSE(KeyCode:" + keyCode + ")";
+				break;
+			case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+				ret = "get Key KEYCODE_MEDIA_PREVIOUS(KeyCode:" + keyCode + ")";
+				break;
+			case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+				ret = "get Key KEYCODE_MEDIA_PLAY_PAUSE(KeyCode:" + keyCode + ")";
+				break;
+			case KeyEvent.KEYCODE_MEDIA_NEXT:
+				ret = "get Key KEYCODE_MEDIA_NEXT(KeyCode:" + keyCode + ")";
+				break;
+			default:
+				ret = "keyCode: "
+						+ keyCode
+						+ " (http://developer.android.com/reference/android/view/KeyEvent.html)";
+				break;
+		}
+		return ret;
+	}
+
+	public void printToast(String str) {
+		Toast.makeText(getActivity(), str, Toast.LENGTH_LONG).show();
+	}
 
 
 	// 内部类,尽量少用<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -326,6 +449,7 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
      // 自定义方法>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
      private void onSignedInInitialize(String username) {
          mUsername = username;
+		 Log.i(TAG, "User name:" + mUsername);
      }
 
     private void onSignedOutCleanup() {

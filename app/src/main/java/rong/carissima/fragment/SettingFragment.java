@@ -14,7 +14,9 @@ limitations under the License.*/
 
 package rong.carissima.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,6 +24,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import rong.carissima.R;
 import rong.carissima.activity.AboutActivity;
@@ -98,7 +102,16 @@ public class SettingFragment extends BaseFragment implements OnClickListener, On
 
 	private void logout() {
 //		context.finish();
-        AuthUI.getInstance().signOut(this.getActivity());
+//        AuthUI.getInstance().signOut(this.getActivity());
+		AuthUI.getInstance()
+				.signOut(this.getActivity())
+				.addOnCompleteListener(new OnCompleteListener<Void>() {
+					public void onComplete(@NonNull Task<Void> task) {
+						// user is now signed out
+//						startActivity(new Intent(getActivity(), getActivity().class));
+						getActivity().finish();
+					}
+				});
 	}
 
 
