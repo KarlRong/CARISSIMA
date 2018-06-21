@@ -39,6 +39,7 @@ import java.util.List;
 import rong.carissima.R;
 import zuo.biao.library.base.BaseFragment;
 import zuo.biao.library.model.Entry;
+import zuo.biao.library.util.Log;
 
 
 /** 使用方法：复制>粘贴>改名>改代码 */
@@ -49,7 +50,7 @@ import zuo.biao.library.model.Entry;
  */
 public class MapFragment extends BaseFragment implements
 		OnMapReadyCallback, PermissionsListener, LifecycleOwner {
-	private static final String TAG = "ServiceFragment";
+	private static final String TAG = "MapFragment";
 
 	//与Activity通信<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
@@ -89,6 +90,7 @@ public class MapFragment extends BaseFragment implements
 		initEvent();
 		//功能归类分区方法，必须调用>>>>>>>>>>
 
+        Log.w(TAG, "On create view");
 		return view;//返回值必须为view
 	}
 
@@ -233,19 +235,23 @@ public class MapFragment extends BaseFragment implements
     public void onResume() {
         super.onResume();
         mapView.onResume();
+        mapView.onStart();
         mLifecycleRegistry.markState(Lifecycle.State.RESUMED);
+        Log.w(TAG, "On resume");
     }
 
     @Override
     public void onPause() {
         super.onPause();
         mapView.onPause();
+        Log.w(TAG, "On Pause");
     }
 
     @Override
     public void onStop() {
         super.onStop();
         mapView.onStop();
+        Log.w(TAG, "On stop");
     }
 
     @Override
@@ -255,16 +261,18 @@ public class MapFragment extends BaseFragment implements
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         mapView.onDestroy();
         mLifecycleRegistry.markState(Lifecycle.State.DESTROYED);
+        Log.w(TAG, "On destroy");
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
+        Log.w(TAG, "On save instance state");
     }
 
 	//Event事件区(只要存在事件监听代码就是)>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
