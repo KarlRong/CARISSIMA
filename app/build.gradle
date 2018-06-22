@@ -38,6 +38,7 @@ dependencies {
 //    compile 'com.android.support:appcompat-v7:25.4.0'
 
     // Firebase
+    implementation 'com.google.firebase:firebase-core:9.6.0'
     implementation 'com.google.firebase:firebase-database:9.6.0'
     implementation 'com.google.firebase:firebase-auth:9.6.0'
     implementation 'com.google.firebase:firebase-storage:9.6.0'

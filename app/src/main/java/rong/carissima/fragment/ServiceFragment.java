@@ -14,6 +14,9 @@ limitations under the License.*/
 
 package rong.carissima.fragment;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,15 +25,18 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import rong.carissima.DEMO.DemoAdapter;
 import rong.carissima.R;
 import rong.carissima.activity.UserActivity;
 import zuo.biao.library.base.BaseFragment;
 import zuo.biao.library.model.Entry;
+import zuo.biao.library.util.Log;
 
 
 /** 使用方法：复制>粘贴>改名>改代码 */
@@ -39,7 +45,8 @@ import zuo.biao.library.model.Entry;
  * @author Lemon
  * @use new DemoFragment(),具体参考.DemoFragmentActivity(initData方法内)
  */
-public class ServiceFragment extends BaseFragment {
+public class ServiceFragment extends BaseFragment implements
+        View.OnClickListener {
 	private static final String TAG = "ServiceFragment";
 
 	//与Activity通信<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -119,12 +126,17 @@ public class ServiceFragment extends BaseFragment {
 	//Data数据区(存在数据获取或处理代码，但不存在事件监听代码)<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 	//示例代码<<<<<<<<
-	private List<Entry<String, String>> list;
+    public BluetoothAdapter mBluetoothAdapter;
+    public static final int REQUEST_ENABLE_BT = 2;
+    public static final String SHUTTER_NAME = "AB Shutter3";
+    public String mShutterAddress;
 	//示例代码>>>>>>>>>
 	@Override
 	public void initData() {//必须在onCreateView方法内调用
 
 		//示例代码<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        checkBoundedShutter();
 
 		showShortToast(TAG + ": serviceState = " + mServiceState);
 
@@ -160,7 +172,7 @@ public class ServiceFragment extends BaseFragment {
 	@Override
 	public void initEvent() {//必须在onCreateView方法内调用
 		//示例代码<<<<<<<<<<<<<<<<<<<
-
+		findView(R.id.bt_activeService).setOnClickListener(this);
 		//示例代码>>>>>>>>>>>>>>>>>>>
 	}
 
@@ -180,7 +192,15 @@ public class ServiceFragment extends BaseFragment {
 
 
 	//类相关监听>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.bt_activeService:
+                Log.i(TAG,"Button clicked!");
+                break;
+            default:
+                break;
+        }
+    }
 	//系统自带监听>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
@@ -198,5 +218,35 @@ public class ServiceFragment extends BaseFragment {
 
 
 	//内部类,尽量少用>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    protected boolean checkBoundedShutter() {
+        if (mBluetoothAdapter == null) {
+            // Device does not support Bluetooth
+            Log.w(TAG, "This device does not support Bluetooth");
+        }
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+        // If there are paired devices
+        if (pairedDevices.size() > 0) {
+            // Loop through paired devices
+            for (BluetoothDevice device : pairedDevices) {
+                // Add the name and address to an array adapter to show in a ListView
+                Log.i(TAG, device.getName() + "\n" + device.getAddress() + "\n");
+                if (device.getName() == SHUTTER_NAME) {
+                    mShutterAddress = device.getAddress();
+                    Log.i(TAG, SHUTTER_NAME + "Found in bounded pairs ");
+                    return true;
+                }
+                else{Log.i(TAG, SHUTTER_NAME + "Found in bounded pairs ");}
+            }
+        } else {
+            Log.i(TAG, "Bluetooth device not found");
+            return false;
+        }
+        return false;
+    }
 
 }

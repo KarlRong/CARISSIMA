@@ -286,21 +286,21 @@ public class MapFragment extends BaseFragment implements
         }
         mapView.onStart();
         mLifecycleRegistry.markState(Lifecycle.State.STARTED);
-        Log.w(TAG, "On start");
+//        Log.w(TAG, "On start");
     }
     @Override
     public void onResume() {
         super.onResume();
         mapView.onResume();
         mLifecycleRegistry.markState(Lifecycle.State.RESUMED);
-        Log.w(TAG, "On resume");
+//        Log.w(TAG, "On resume");
     }
 
     @Override
     public void onPause() {
         super.onPause();
         mapView.onPause();
-        Log.w(TAG, "On Pause");
+//        Log.w(TAG, "On Pause");
     }
 
     @Override
@@ -313,7 +313,7 @@ public class MapFragment extends BaseFragment implements
             locationPlugin.onStop();
         }
         mapView.onStop();
-        Log.w(TAG, "On stop");
+//        Log.w(TAG, "On stop");
     }
 
     @Override
@@ -330,14 +330,14 @@ public class MapFragment extends BaseFragment implements
             locationEngine.deactivate();
         }
         mLifecycleRegistry.markState(Lifecycle.State.DESTROYED);
-        Log.w(TAG, "On destroy");
+//        Log.w(TAG, "On destroy");
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
-        Log.w(TAG, "On save instance state");
+//        Log.w(TAG, "On save instance state");
     }
 
 	//Event事件区(只要存在事件监听代码就是)>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

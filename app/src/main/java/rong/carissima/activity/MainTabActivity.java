@@ -29,6 +29,8 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -42,13 +44,14 @@ import rong.carissima.fragment.UserRecyclerFragment;
 import zuo.biao.library.base.BaseBottomTabActivity;
 import zuo.biao.library.interfaces.OnBottomDragListener;
 import zuo.biao.library.manager.SystemBarTintManager;
+import zuo.biao.library.util.Log;
 
 /**应用主页
  * @author Lemon
  * @use MainTabActivity.createIntent(...)
  */
 public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDragListener {
-	//	private static final String TAG = "MainTabActivity";
+		private static final String TAG = "MainTabActivity";
 
 
 	//启动方法<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -200,6 +203,8 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
         mFirebaseAuth = FirebaseAuth.getInstance();
         mUsername = ANONYMOUS;
 
+        checkPlayServices();
+
 		// Mapbox Access token
 //		Mapbox.getInstance(getApplicationContext(), this.getString(R.string.mapbox_token));
 
@@ -314,7 +319,100 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 
 	// 系统自带监听方法>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        printToast(parseKeyCode(keyCode));
+        return true;
+    }
 
+    public String parseKeyCode(int keyCode) {
+        String ret = "";
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_POWER:
+                // 监控/拦截/屏蔽电源键 这里拦截不了
+                ret = "get Key KEYCODE_POWER(KeyCode:" + keyCode + ")";
+                break;
+            case KeyEvent.KEYCODE_RIGHT_BRACKET:
+                // 监控/拦截/屏蔽返回键
+                ret = "get Key KEYCODE_RIGHT_BRACKET";
+                break;
+            case KeyEvent.KEYCODE_MENU:
+                // 监控/拦截菜单键
+                ret = "get Key KEYCODE_MENU";
+                break;
+            case KeyEvent.KEYCODE_HOME:
+                // 由于Home键为系统键，此处不能捕获
+                ret = "get Key KEYCODE_HOME";
+                break;
+            case KeyEvent.KEYCODE_DPAD_UP:
+                // 监控/拦截/屏蔽上方向键
+                ret = "get Key KEYCODE_DPAD_UP";
+                break;
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                // 监控/拦截/屏蔽左方向键
+                ret = "get Key KEYCODE_DPAD_LEFT";
+                break;
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                // 监控/拦截/屏蔽右方向键
+                ret = "get Key KEYCODE_DPAD_RIGHT";
+                break;
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                // 监控/拦截/屏蔽下方向键
+                ret = "get Key KEYCODE_DPAD_DOWN";
+                break;
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+                // 监控/拦截/屏蔽中方向键
+                ret = "get Key KEYCODE_DPAD_CENTER";
+                break;
+            case KeyEvent.FLAG_KEEP_TOUCH_MODE:
+                // 监控/拦截/屏蔽长按
+                ret = "get Key FLAG_KEEP_TOUCH_MODE";
+                break;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                // 监控/拦截/屏蔽下方向键
+                ret = "get Key KEYCODE_VOLUME_DOWN(KeyCode:" + keyCode + ")";
+                break;
+            case KeyEvent.KEYCODE_VOLUME_UP://Shutter 提供
+                // 监控/拦截/屏蔽中方向键
+                ret = "get Key KEYCODE_VOLUME_UP(KeyCode:" + keyCode + ")";
+                break;
+            case 220:
+                // case KeyEvent.KEYCODE_BRIGHTNESS_DOWN:
+                // 监控/拦截/屏蔽亮度减键
+                ret = "get Key KEYCODE_BRIGHTNESS_DOWN(KeyCode:" + keyCode + ")";
+                break;
+            case 221:
+                // case KeyEvent.KEYCODE_BRIGHTNESS_UP:
+                // 监控/拦截/屏蔽亮度加键
+                ret = "get Key KEYCODE_BRIGHTNESS_UP(KeyCode:" + keyCode + ")";
+                break;
+            case KeyEvent.KEYCODE_MEDIA_PLAY:
+                ret = "get Key KEYCODE_MEDIA_PLAY(KeyCode:" + keyCode + ")";
+                break;
+            case KeyEvent.KEYCODE_MEDIA_PAUSE:
+                ret = "get Key KEYCODE_MEDIA_PAUSE(KeyCode:" + keyCode + ")";
+                break;
+            case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+                ret = "get Key KEYCODE_MEDIA_PREVIOUS(KeyCode:" + keyCode + ")";
+                break;
+            case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+                ret = "get Key KEYCODE_MEDIA_PLAY_PAUSE(KeyCode:" + keyCode + ")";
+                break;
+            case KeyEvent.KEYCODE_MEDIA_NEXT:
+                ret = "get Key KEYCODE_MEDIA_NEXT(KeyCode:" + keyCode + ")";
+                break;
+            default:
+                ret = "keyCode: "
+                        + keyCode
+                        + " (http://developer.android.com/reference/android/view/KeyEvent.html)";
+                break;
+        }
+        return ret;
+    }
+
+    public void printToast(String str) {
+        Toast.makeText(getActivity(), str, Toast.LENGTH_LONG).show();
+    }
 	// Event事件区(只要存在事件监听代码就是)>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
@@ -326,9 +424,28 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
      // 自定义方法>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
      private void onSignedInInitialize(String username) {
          mUsername = username;
+         Log.i(TAG, "User name:" + mUsername);
      }
 
     private void onSignedOutCleanup() {
         mUsername = ANONYMOUS;
     }
+
+	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+
+	private boolean checkPlayServices() {
+		GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+		int result = googleAPI.isGooglePlayServicesAvailable(this);
+		Log.i(TAG,"GooglePlayServiceAvailable: " + result);
+		if(result != ConnectionResult.SUCCESS) {
+			if(googleAPI.isUserResolvableError(result)) {
+				googleAPI.getErrorDialog(this, result,
+						PLAY_SERVICES_RESOLUTION_REQUEST).show();
+			}
+
+			return false;
+		}
+
+		return true;
+	}
 }
