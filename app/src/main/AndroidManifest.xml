@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="rong.carissima"
     android:versionCode="26"
-    android:versionName="@string/app_version" >
+    android:versionName="@string/app_version">
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -55,23 +55,21 @@
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <!-- QRCodeLibrary >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
-
-
     <!-- 需要的权限和功能 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
-
     <application
-        android:name="rong.carissima.application.DemoApplication"
+        android:name=".application.DemoApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:screenOrientation="portrait"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
-            android:name="rong.carissima.activity.SplashActivity"
+            android:name=".activity.SplashActivity"
             android:label="@string/app_name"
-            android:theme="@style/SplashTheme"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -79,79 +77,79 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="rong.carissima.activity.AboutActivity"
+            android:name=".activity.AboutActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
-            android:name="rong.carissima.activity.MainTabActivity"
+            android:name=".activity.MainTabActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
-            android:name="rong.carissima.activity.SettingActivity"
+            android:name=".activity.SettingActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="rong.carissima.activity.UserActivity"
+            android:name=".activity.UserActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="rong.carissima.activity.ScanActivity"
+            android:name=".activity.ScanActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="rong.carissima.activity.QRCodeActivity"
+            android:name=".activity.QRCodeActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <!-- Demo <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
 
         <activity
-            android:name="rong.carissima.DEMO.DemoMainActivity"
+            android:name=".DEMO.DemoMainActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="rong.carissima.DEMO.DemoActivity"
+            android:name=".DEMO.DemoActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="rong.carissima.DEMO.DemoListActivity"
+            android:name=".DEMO.DemoListActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="rong.carissima.DEMO.DemoRecyclerActivity"
+            android:name=".DEMO.DemoRecyclerActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="rong.carissima.DEMO.DemoHttpListActivity"
+            android:name=".DEMO.DemoHttpListActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="rong.carissima.DEMO.DemoHttpRecyclerActivity"
+            android:name=".DEMO.DemoHttpRecyclerActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="rong.carissima.DEMO.DemoFragmentActivity"
+            android:name=".DEMO.DemoFragmentActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="rong.carissima.DEMO.DemoTabActivity"
+            android:name=".DEMO.DemoTabActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="rong.carissima.DEMO.DemoSQLActivity"
+            android:name=".DEMO.DemoSQLActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize|adjustUnspecified" />
         <activity
-            android:name="rong.carissima.DEMO.DemoTimeRefresherActivity"
+            android:name=".DEMO.DemoTimeRefresherActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize|adjustUnspecified" />
         <activity
-            android:name="rong.carissima.DEMO.DemoBroadcastReceiverActivity"
+            android:name=".DEMO.DemoBroadcastReceiverActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="rong.carissima.DEMO.DemoBottomWindow"
+            android:name=".DEMO.DemoBottomWindow"
             android:screenOrientation="portrait"
             android:theme="@style/Window"
             android:windowSoftInputMode="stateAlwaysHidden" />

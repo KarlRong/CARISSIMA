@@ -16,6 +16,8 @@ package rong.carissima.fragment;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothProfile;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,6 +29,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +39,7 @@ import java.util.Set;
 import rong.carissima.DEMO.DemoAdapter;
 import rong.carissima.R;
 import rong.carissima.activity.UserActivity;
+import rong.carissima.util.HidConncetUtil;
 import zuo.biao.library.base.BaseFragment;
 import zuo.biao.library.model.Entry;
 import zuo.biao.library.util.Log;
@@ -130,13 +136,24 @@ public class ServiceFragment extends BaseFragment implements
     public static final int REQUEST_ENABLE_BT = 2;
     public static final String SHUTTER_NAME = "AB Shutter3";
     public String mShutterAddress;
+    public BluetoothDevice mShutterDevice;
+
+    private List<BluetoothDevice> mList = new ArrayList<>();
+    private Context mContext;
+    private HidConncetUtil mHidConncetUtil;
+
 	//示例代码>>>>>>>>>
 	@Override
 	public void initData() {//必须在onCreateView方法内调用
 
 		//示例代码<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
         checkBoundedShutter();
+        isConnected(mShutterDevice);
+
+        this.mContext = getActivity().getApplicationContext();
+        this.mHidConncetUtil = new HidConncetUtil(mContext);
 
 		showShortToast(TAG + ": serviceState = " + mServiceState);
 
@@ -195,6 +212,7 @@ public class ServiceFragment extends BaseFragment implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bt_activeService:
+                isConnected(mShutterDevice);
                 Log.i(TAG,"Button clicked!");
                 break;
             default:
@@ -235,12 +253,16 @@ public class ServiceFragment extends BaseFragment implements
             for (BluetoothDevice device : pairedDevices) {
                 // Add the name and address to an array adapter to show in a ListView
                 Log.i(TAG, device.getName() + "\n" + device.getAddress() + "\n");
-                if (device.getName() == SHUTTER_NAME) {
+                if (device.getName().equals(SHUTTER_NAME)) {
+                    mShutterDevice = device;
                     mShutterAddress = device.getAddress();
-                    Log.i(TAG, SHUTTER_NAME + "Found in bounded pairs ");
+                    Log.i(TAG, SHUTTER_NAME + " Found in bounded pairs ");
                     return true;
                 }
-                else{Log.i(TAG, SHUTTER_NAME + "Found in bounded pairs ");}
+                else{
+                    Log.i(TAG, SHUTTER_NAME + " not found in bounded pairs ");
+                    return false;
+                }
             }
         } else {
             Log.i(TAG, "Bluetooth device not found");
@@ -249,4 +271,50 @@ public class ServiceFragment extends BaseFragment implements
         return false;
     }
 
+
+    /**
+     * 判断是否连接
+     * @param bluetoothDevice
+     */
+    private void isConnected(final BluetoothDevice bluetoothDevice){
+            getSuccess(getThirdPartBlueList(), bluetoothDevice);
+    }
+
+    public void getSuccess(ArrayList<BluetoothDevice> list,BluetoothDevice bluetoothDevice) {
+        //判断连接列表中是否有该设备
+        for(BluetoothDevice bluetoothDevice1:list){
+            if(bluetoothDevice.getAddress().equals(bluetoothDevice1.getAddress())){
+                showShortToast("Shutter 已连接");
+                break;
+            }
+        }
+    }
+    /**
+     * 获取第三方蓝牙连接设备列表, 根据蓝牙设备名称判断, JJMatch为自己的蓝牙设备
+     */
+    private ArrayList getThirdPartBlueList(){
+        BluetoothAdapter adapter =  BluetoothAdapter.getDefaultAdapter();
+        Class bluetoothAdapterClass = BluetoothAdapter.class;
+        ArrayList deviceList = new ArrayList<>();
+        try {
+            Method method = bluetoothAdapterClass.getDeclaredMethod("getConnectionState");
+            method.setAccessible(true);
+
+            int state = (int) method.invoke(adapter, (Object[]) null);
+            if(state == BluetoothAdapter.STATE_CONNECTED || state == BluetoothAdapter.STATE_CONNECTING){
+                Set<BluetoothDevice> devices = adapter.getBondedDevices();
+                for (BluetoothDevice device : devices) {
+                    Method isConnectedMethod = BluetoothDevice.class.getDeclaredMethod("isConnected");
+                    method.setAccessible(true);
+                    boolean isConnected = (boolean) isConnectedMethod.invoke(device);
+                    if(isConnected){
+                        deviceList.add(device);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return deviceList;
+    }
 }

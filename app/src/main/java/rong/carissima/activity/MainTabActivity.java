@@ -327,6 +327,7 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 
     public String parseKeyCode(int keyCode) {
         String ret = "";
+        Log.i(TAG, "key code :" + keyCode);
         switch (keyCode) {
             case KeyEvent.KEYCODE_POWER:
                 // 监控/拦截/屏蔽电源键 这里拦截不了
@@ -411,7 +412,7 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
     }
 
     public void printToast(String str) {
-        Toast.makeText(getActivity(), str, Toast.LENGTH_LONG).show();
+        Log.i(TAG, str);
     }
 	// Event事件区(只要存在事件监听代码就是)>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
