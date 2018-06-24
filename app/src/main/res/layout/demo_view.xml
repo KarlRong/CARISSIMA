@@ -1,29 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- ListView中的ItemView里不要用Button等默认hasFocus的控件，以免onItemClick事件无响应 -->
 <!-- 如果一定要用，则必须在根布局加上 android:descendantFocusability="blocksDescendants" -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/content_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/to_alpha" >
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/ivDemoViewHead"
+            style="@style/content_item_lf_img"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginRight="6dp"
+            android:background="@color/alpha_1"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvDemoViewName"
+            style="@style/content_item_lf_tv"
+            android:layout_width="match_parent"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-medium"
+            android:text="item"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="#2B3D4D" />
+
+        <TextView
+            android:id="@+id/tvDemoViewNumber"
+            style="@style/content_item_rt_tv"
+            android:layout_width="match_parent"
+            android:fontFamily="sans-serif"
+            android:layout_marginBottom="8dp"
+            android:paddingLeft="0dp"
+            android:text="right text"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="#AEB6BD" />
+
+    </LinearLayout>
+
     <ImageView
-        android:id="@+id/ivDemoViewHead"
-        style="@style/content_item_lf_img"
-        android:layout_height="30dp"
-        android:background="@color/alpha_1"
-        android:layout_marginRight="6dp"
-        android:layout_width="30dp"/>
+        style="@style/content_item_rt_img"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="8dp" />
 
-    <TextView
-        android:id="@+id/tvDemoViewName"
-        style="@style/content_item_lf_tv"
-        android:layout_weight="1"
-        android:text="item" />
-
-    <TextView
-        android:id="@+id/tvDemoViewNumber"
-        style="@style/content_item_rt_tv"
-        android:text="right text" />
-
-    <ImageView style="@style/content_item_rt_img" />
-
-</LinearLayout>
+</RelativeLayout>

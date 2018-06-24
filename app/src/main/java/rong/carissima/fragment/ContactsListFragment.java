@@ -32,6 +32,7 @@ import java.util.List;
 import rong.carissima.DEMO.DemoAdapter;
 import rong.carissima.R;
 import rong.carissima.activity.UserActivity;
+import rong.carissima.util.SharedPreferencesHelper;
 import zuo.biao.library.base.BaseListFragment;
 import zuo.biao.library.interfaces.AdapterCallBack;
 import zuo.biao.library.model.Entry;
@@ -119,10 +120,12 @@ public class ContactsListFragment extends BaseListFragment<Entry<String, String>
 
 
 	//Data数据区(存在数据获取或处理代码，但不存在事件监听代码)<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
+    private SharedPreferencesHelper sharedPreferencesHelper;
 	@Override
 	public void initData() {//必须在onCreateView方法内调用
 		super.initData();
+        sharedPreferencesHelper = new SharedPreferencesHelper(
+                getActivity(), SharedPreferencesHelper.CONTACTS_FILE_NAME);
 
 	}
 
@@ -133,10 +136,17 @@ public class ContactsListFragment extends BaseListFragment<Entry<String, String>
 		showProgressDialog(R.string.loading);
 
 		List<Entry<String, String>> list = new ArrayList<Entry<String, String>>();
-		for (int i = 0; i < 64; i++) {
-			list.add(new Entry<String, String>("联系人" + i , String.valueOf(1311736568 + i*i)));
-		}
+//		for (int i = 0; i < 64; i++) {
+//			list.add(new Entry<String, String>("联系人" + i , String.valueOf(1311736568 + i*i)));
+//		}
 
+		ArrayList<String[]> contactsList = sharedPreferencesHelper.getContacts();
+		int nums = (Integer)sharedPreferencesHelper.getSharedPreference(SharedPreferencesHelper.CONTACT_NUMS, 0);
+		for(int i = 0; i < nums; i++){
+		    String[] contact = contactsList.get(i);
+		    Log.i(TAG, "ContactID: " + contact[0] + " ContactName: " + contact[1] +  "ContactNumber: " + contact[2]);
+            list.add(new Entry<String, String>(contact[1] , contact[2]));
+        }
 		onLoadSucceed(page, list);
 		//示例代码>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	}
@@ -213,7 +223,10 @@ public class ContactsListFragment extends BaseListFragment<Entry<String, String>
                 String contactId = getContactId(cursor);
                 //查询联系人电话的方法
                 String contactNumber = getContactNumber(cursor);
+                sharedPreferencesHelper.putContact(contactId, contactName, contactNumber );
                 Log.i(TAG,"Contact name: " + contactName + " Id " + contactId + " Phone number " + contactNumber);
+
+                onRefresh();
             }
         }
     }
