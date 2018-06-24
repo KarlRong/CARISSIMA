@@ -56,11 +56,29 @@ public class SharedPreferencesHelper {
             nums = (Integer)getSharedPreference(CONTACT_NUMS, 0);
         }
         int index = nums + 1;
-        put(ITEM + index + CONTACT_ID, contactId);
-        put(ITEM + index + CONTACT_NAME, contactName);
-        put(ITEM + index + CONTACT_NUMBER, contactNumber);
+        put(ITEM + contactId + CONTACT_ID, contactId);
+        put(ITEM + contactId + CONTACT_NAME, contactName);
+        put(ITEM + contactId + CONTACT_NUMBER, contactNumber);
         nums = index;
         put(CONTACT_NUMS, nums);
+    }
+
+    public void removeContact(String rmContactId){
+        Integer nums = 0;
+        if(contain(CONTACT_NUMS)){
+            nums = (Integer)getSharedPreference(CONTACT_NUMS, 0);
+        }else{
+            return;
+        }
+        for(int i = 1; i <= nums; i++){
+            int index = i;
+            String contactId = getSharedPreference(ITEM + index + CONTACT_ID, "").toString().trim();
+            if(contactId == rmContactId){
+                remove(ITEM + index + CONTACT_ID);
+                remove(ITEM + index + CONTACT_NAME);
+                remove(ITEM + index + CONTACT_NUMBER);
+            }
+        }
     }
     /**
      * 获取保存的数据

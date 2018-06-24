@@ -31,6 +31,7 @@ import java.util.List;
 
 import rong.carissima.DEMO.DemoAdapter;
 import rong.carissima.R;
+import rong.carissima.activity.EditorActivity;
 import rong.carissima.activity.UserActivity;
 import rong.carissima.util.SharedPreferencesHelper;
 import zuo.biao.library.base.BaseListFragment;
@@ -129,13 +130,14 @@ public class ContactsListFragment extends BaseListFragment<Entry<String, String>
 
 	}
 
+    public List<Entry<String, String>> mContactList;
 
 	@Override
 	public void getListAsync(int page) {
 		//示例代码<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 		showProgressDialog(R.string.loading);
 
-		List<Entry<String, String>> list = new ArrayList<Entry<String, String>>();
+		mContactList = new ArrayList<Entry<String, String>>();
 //		for (int i = 0; i < 64; i++) {
 //			list.add(new Entry<String, String>("联系人" + i , String.valueOf(1311736568 + i*i)));
 //		}
@@ -145,9 +147,9 @@ public class ContactsListFragment extends BaseListFragment<Entry<String, String>
 		for(int i = 0; i < nums; i++){
 		    String[] contact = contactsList.get(i);
 		    Log.i(TAG, "ContactID: " + contact[0] + " ContactName: " + contact[1] +  "ContactNumber: " + contact[2]);
-            list.add(new Entry<String, String>(contact[1] , contact[2]));
+            mContactList.add(new Entry<String, String>(contact[1] , contact[2]));
         }
-		onLoadSucceed(page, list);
+		onLoadSucceed(page, mContactList);
 		//示例代码>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	}
 
@@ -173,7 +175,8 @@ public class ContactsListFragment extends BaseListFragment<Entry<String, String>
 	//示例代码<<<<<<<<<<<<<<<<<<<
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		toActivity(UserActivity.createIntent(context, position));//一般用id，这里position仅用于测试 id));//
+//		toActivity(UserActivity.createIntent(context, 0));//一般用id，这里position仅用于测试 id));//
+        toActivity(EditorActivity.createIntent(context, position));//一般用id，这里position仅用于测试 id));//
 	}
 	//示例代码>>>>>>>>>>>>>>>>>>>
 
