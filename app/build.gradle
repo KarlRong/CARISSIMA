@@ -26,6 +26,17 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+//    packagingOptions {
+//        exclude 'META-INF/DEPENDENCIES'
+//        exclude 'META-INF/LICENSE'
+//        exclude 'META-INF/LICENSE.txt'
+//        exclude 'META-INF/license.txt'
+//        exclude 'META-INF/NOTICE'
+//        exclude 'META-INF/NOTICE.txt'
+//        exclude 'META-INF/notice.txt'
+//        exclude 'META-INF/ASL2.0'
+//    }
+
 }
 
 
@@ -64,6 +75,9 @@ dependencies {
         implementation ('com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.14.0') {
                 transitive = true
         }
+
+//    implementation 'com.nexmo:client:2.0.2'
+    implementation 'com.jaeger.statusbarutil:library:1.5.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

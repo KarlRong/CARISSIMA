@@ -24,8 +24,10 @@ import android.support.annotation.NonNull;
 import android.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -33,9 +35,12 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.jaeger.library.StatusBarUtil;
 
+import rong.carissima.DEMO.DemoListFragment;
 import rong.carissima.DEMO.DemoTabFragment;
 import rong.carissima.R;
+import rong.carissima.fragment.ContactsListFragment;
 import rong.carissima.fragment.MapFragment;
 import rong.carissima.fragment.ServiceFragment;
 import rong.carissima.fragment.SettingFragment;
@@ -80,12 +85,14 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 
 	private String mUsername;
 
+    private ImageView mAddView;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.main_tab_activity, this);
 
-		//功能归类分区方法，必须调用<<<<<<<<<<
+       	//功能归类分区方法，必须调用<<<<<<<<<<
 		initView();
 		initData();
 		initEvent();
@@ -116,16 +123,9 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 		super.initView();
 		exitAnim = R.anim.bottom_push_out;
 
-        Window window = this.getWindow();
+        mAddView = findViewById(R.id.btn_add_contact);
 
-//        // clear FLAG_TRANSLUCENT_STATUS flag:
-//        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//
-////        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
-////        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-////
-////        // finally change the color
-//        window.setStatusBarColor(ContextCompat.getColor(this,R.color.topbar_bg));
+        StatusBarUtil.setTranslucent(this, 50);
 
         demoTabFragment = DemoTabFragment.createInstance("杭州");
 	}
@@ -150,13 +150,24 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 	}
 
 	@Override
+    public void selectFragment(int position) {
+	    super.selectFragment(position);
+	    if(position == 2){
+            mAddView.setVisibility(View.VISIBLE);
+        }else {
+            mAddView.setVisibility(View.GONE);
+        }
+    }
+	@Override
 	protected Fragment getFragment(int position) {
 		switch (position) {
 		case 1:
 			return MapFragment.createInstance();
 		case 2:
-		    return UserRecyclerFragment.createInstance(UserListFragment.RANGE_RECOMMEND);
-//			return demoTabFragment;
+//		    return UserRecyclerFragment.createInstance(UserListFragment.RANGE_RECOMMEND);
+//            return DemoTabFragment.createInstance("杭州");
+//            return UserListFragment.createInstance(UserListFragment.RANGE_ALL);
+            return ContactsListFragment.createInstance();
 		case 3:
 			return SettingFragment.createInstance();
 		default:
@@ -260,9 +271,9 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 		case 2:
 			if (demoTabFragment != null) {
 				if (rightToLeft) {
-					demoTabFragment.selectMan();
+//					demoTabFragment.selectMan();
 				} else {
-					demoTabFragment.selectPlace();
+//					demoTabFragment.selectPlace();
 				}
 			}
 			break;
