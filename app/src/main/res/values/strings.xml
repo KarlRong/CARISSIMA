@@ -6,4 +6,5 @@
     <string name="accessibility_description">Shutter accessibility</string>
     <string name="NEXMO_API_KEY">0fea8854</string>
     <string name="NEXMO_API_SECRET">5YmwJC7fvUhScwis</string>
+    <string name="show_bluetooth_state">Show bluetooth state</string>
 </resources>

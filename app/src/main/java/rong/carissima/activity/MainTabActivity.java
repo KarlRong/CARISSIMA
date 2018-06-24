@@ -183,11 +183,11 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 		//		rlBottomTabTopbar.setVisibility(position == 2 ? View.GONE : View.VISIBLE);
 
 		tvBaseTitle.setText(TAB_NAMES[position]);
-
-		//点击底部tab切换顶部tab，非必要
-		if (position == 2 && position == currentPosition && demoTabFragment != null) {
-			demoTabFragment.selectNext();
-		}
+//
+//		//点击底部tab切换顶部tab，非必要
+//		if (position == 2 && position == currentPosition && demoTabFragment != null) {
+//			demoTabFragment.selectNext();
+//		}
 	}
 
 

@@ -17,20 +17,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/bt_activeService"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="36dp"
+    <ImageView
+        android:id="@+id/iv_states_service"
+        android:layout_width="149dp"
+        android:layout_height="138dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:background="@drawable/rounded_button"
-        android:text="@string/touch_here_to_active_the_device"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:layout_marginTop="8dp"
+        android:foregroundGravity="center_vertical|center_horizontal"
+        android:scaleType="centerCrop"
+        android:src="@drawable/states_selector"
         app:layout_constraintBottom_toBottomOf="@+id/im_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/im_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/show_bluetooth_state" />
 </android.support.constraint.ConstraintLayout>

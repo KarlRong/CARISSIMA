@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -51,8 +52,7 @@ import zuo.biao.library.util.Log;
  * @author Lemon
  * @use new DemoFragment(),具体参考.DemoFragmentActivity(initData方法内)
  */
-public class ServiceFragment extends BaseFragment implements
-        View.OnClickListener {
+public class ServiceFragment extends BaseFragment {
 	private static final String TAG = "ServiceFragment";
 
 	//与Activity通信<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -108,13 +108,15 @@ public class ServiceFragment extends BaseFragment implements
 	//UI显示区(操作UI，但不存在数据获取或处理代码，也不存在事件监听代码)<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 	//示例代码<<<<<<<<
-	private Button btActiveService;
+//	private Button btActiveService;
+	private ImageView ivStatesService;
 	//示例代码>>>>>>>>
 	@Override
 	public void initView() {//必须在onCreateView方法内调用
 
 		//示例代码<<<<<<<<<<<<<<
-		btActiveService = findView(R.id.bt_activeService);
+//		btActiveService = findView(R.id.bt_activeService);
+		ivStatesService = findView(R.id.iv_states_service);
 		//示例代码>>>>>>>>>>>>>>
 	}
 
@@ -147,28 +149,25 @@ public class ServiceFragment extends BaseFragment implements
 	public void initData() {//必须在onCreateView方法内调用
 
 		//示例代码<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        checkBoundedShutter();
-        isConnected(mShutterDevice);
+        showProgressDialog(R.string.loading);
 
-        this.mContext = getActivity().getApplicationContext();
-        this.mHidConncetUtil = new HidConncetUtil(mContext);
+        runThread(TAG + "initData", new Runnable() {
+            @Override
+            public void run() {
+                runUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-		showShortToast(TAG + ": serviceState = " + mServiceState);
+                        checkBoundedShutter();
+                        ivStatesService.setSelected(isConnected(mShutterDevice));
 
-		showProgressDialog(R.string.loading);
-
-		runThread(TAG + "initData", new Runnable() {
-			@Override
-			public void run() {
-				runUiThread(new Runnable() {
-					@Override
-					public void run() {
-						dismissProgressDialog();
-					}
-				});
-			}
+                        Log.i(TAG, ": serviceState = " + mServiceState);
+                        dismissProgressDialog();
+                    }
+                });
+            }
 		});
 
 		//示例代码>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -189,7 +188,7 @@ public class ServiceFragment extends BaseFragment implements
 	@Override
 	public void initEvent() {//必须在onCreateView方法内调用
 		//示例代码<<<<<<<<<<<<<<<<<<<
-		findView(R.id.bt_activeService).setOnClickListener(this);
+//		findView(R.id.bt_activeService).setOnClickListener(this);
 		//示例代码>>>>>>>>>>>>>>>>>>>
 	}
 
@@ -209,16 +208,16 @@ public class ServiceFragment extends BaseFragment implements
 
 
 	//类相关监听>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.bt_activeService:
-                isConnected(mShutterDevice);
-                Log.i(TAG,"Button clicked!");
-                break;
-            default:
-                break;
-        }
-    }
+//    public void onClick(View v) {
+//        switch (v.getId()) {
+//            case R.id.bt_activeService:
+//                ivStatesService.setSelected(!isConnected(mShutterDevice));
+//                Log.i(TAG,"Button clicked!");
+//                break;
+//            default:
+//                break;
+//        }
+//    }
 	//系统自带监听>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
@@ -276,18 +275,22 @@ public class ServiceFragment extends BaseFragment implements
      * 判断是否连接
      * @param bluetoothDevice
      */
-    private void isConnected(final BluetoothDevice bluetoothDevice){
-            getSuccess(getThirdPartBlueList(), bluetoothDevice);
+    private boolean isConnected(final BluetoothDevice bluetoothDevice){
+            return getSuccess(getThirdPartBlueList(), bluetoothDevice);
     }
 
-    public void getSuccess(ArrayList<BluetoothDevice> list,BluetoothDevice bluetoothDevice) {
+    public boolean getSuccess(ArrayList<BluetoothDevice> list,BluetoothDevice bluetoothDevice) {
         //判断连接列表中是否有该设备
+
+        boolean connected = false;
         for(BluetoothDevice bluetoothDevice1:list){
             if(bluetoothDevice.getAddress().equals(bluetoothDevice1.getAddress())){
                 showShortToast("Shutter 已连接");
+                connected = true;
                 break;
             }
         }
+        return  connected;
     }
     /**
      * 获取第三方蓝牙连接设备列表, 根据蓝牙设备名称判断, JJMatch为自己的蓝牙设备
