@@ -25,6 +25,7 @@ import com.firebase.ui.auth.AuthUI;
 
 import rong.carissima.R;
 import rong.carissima.activity.AboutActivity;
+import rong.carissima.activity.AboutCarissimaActivity;
 import rong.carissima.activity.SettingActivity;
 import zuo.biao.library.base.BaseFragment;
 import zuo.biao.library.ui.AlertDialog;
@@ -149,10 +150,10 @@ public class SettingFragment extends BaseFragment implements OnClickListener, On
 				toActivity(SettingActivity.createIntent(context));
 				break;
 			case R.id.llSettingAbout:
-				toActivity(AboutActivity.createIntent(context));
+				toActivity(AboutCarissimaActivity.createIntent(context));
 				break;
 			case R.id.llSettingLogout:
-                new AlertDialog(context, "退出登录", "确定退出登录？", true, 0, this).show();
+                new AlertDialog(context, "Log Out", "Are you sure", true, 0, this).show();
 				break;
 			default:
 				break;

@@ -19,7 +19,7 @@
                 <TextView
                     style="@style/content_item_lf_tv"
                     android:layout_weight="1"
-                    android:text="个人设置" />
+                    android:text="Preferences" />
 
                 <ImageView style="@style/content_item_rt_img" />
             </LinearLayout>
@@ -33,7 +33,7 @@
                 <TextView
                     style="@style/content_item_lf_tv"
                     android:layout_weight="1"
-                    android:text="关于应用" />
+                    android:text="About Carissima" />
 
                 <ImageView style="@style/content_item_rt_img" />
             </LinearLayout>
@@ -47,7 +47,7 @@
                 <TextView
                     style="@style/content_item_lf_tv"
                     android:layout_weight="1"
-                    android:text="退出登录" />
+                    android:text="Log Out" />
 
                 <ImageView style="@style/content_item_rt_img" />
             </LinearLayout>

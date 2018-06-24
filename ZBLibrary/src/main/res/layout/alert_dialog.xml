@@ -25,9 +25,10 @@
         <TextView
             android:id="@+id/tvAlertDialogMessage"
             style="@style/text_middle"
-            android:textColor="@color/gray_4"
             android:layout_margin="@dimen/item_left_tv_padding"
-            android:gravity="left|top" />
+            android:gravity="left|top"
+            android:textColor="@color/gray_4"
+            android:visibility="gone" />
     </LinearLayout>
 
     <View style="@style/divider_horizontal_1px" />
@@ -41,7 +42,7 @@
             android:layout_weight="1"
             android:background="@drawable/to_alpha"
             android:padding="@dimen/item_distance"
-            android:text="取消"
+            android:text="No"
             android:textColor="@color/gray_3"
             android:visibility="visible" />
 
@@ -54,7 +55,7 @@
             android:layout_weight="1"
             android:background="@drawable/to_alpha"
             android:padding="@dimen/item_distance"
-            android:text="确定" />
+            android:text="Yes" />
     </LinearLayout>
 
 </LinearLayout>
