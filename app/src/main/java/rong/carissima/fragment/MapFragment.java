@@ -201,7 +201,7 @@ public class MapFragment extends BaseFragment implements
             locationPlugin = new LocationLayerPlugin(mapView, mapboxMap, locationEngine);
             locationPlugin.setRenderMode(RenderMode.COMPASS);
             // Set the plugin's camera mode
-            locationPlugin.setCameraMode(CameraMode.TRACKING);
+//            locationPlugin.setCameraMode(CameraMode.TRACKING);
             mLifecycleRegistry.markState(Lifecycle.State.CREATED);
             getLifecycle().addObserver(locationPlugin);
         } else {
@@ -229,7 +229,7 @@ public class MapFragment extends BaseFragment implements
         Log.i(TAG, "Latitude: " + location.getLatitude() + " Longitude: " + location.getLongitude()
                 + " Altitude: " + location.getAltitude());
         mapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(location.getLatitude(), location.getLongitude()), 13));
+                new LatLng(location.getLatitude(), location.getLongitude()), 14));
     }
 
     @Override
