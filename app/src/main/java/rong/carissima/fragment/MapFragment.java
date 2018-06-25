@@ -218,6 +218,7 @@ public class MapFragment extends BaseFragment implements
 
         Location lastLocation = locationEngine.getLastLocation();
         if (lastLocation != null) {
+            Log.i(TAG, lastLocation.toString());
             originLocation = lastLocation;
             setCameraPosition(lastLocation);
         } else {
@@ -225,6 +226,8 @@ public class MapFragment extends BaseFragment implements
         }
     }
     private void setCameraPosition(Location location) {
+        Log.i(TAG, "Latitude: " + location.getLatitude() + " Longitude: " + location.getLongitude()
+                + " Altitude: " + location.getAltitude());
         mapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(location.getLatitude(), location.getLongitude()), 13));
     }
@@ -258,6 +261,7 @@ public class MapFragment extends BaseFragment implements
     public void onLocationChanged(Location location) {
         if (location != null) {
             originLocation = location;
+            Log.i(TAG, location.toString());
             setCameraPosition(location);
             locationEngine.removeLocationEngineListener(this);
         }

@@ -4,15 +4,23 @@ import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Service;
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.IBinder;
 import android.telephony.SmsManager;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 
+import com.mapbox.android.core.location.LocationEngine;
+import com.mapbox.android.core.location.LocationEngineListener;
+import com.mapbox.android.core.location.LocationEnginePriority;
+import com.mapbox.android.core.location.LocationEngineProvider;
+
+import rong.carissima.activity.MainTabActivity;
 import zuo.biao.library.util.Log;
 
-public class ShutterService extends AccessibilityService {
+public class ShutterService extends AccessibilityService
+        implements LocationEngineListener {
 
     private static final String TAG = "ShutterService";
     private AccessibilityServiceInfo mAccessibilityServiceInfo;
@@ -26,6 +34,9 @@ public class ShutterService extends AccessibilityService {
 //    private AuthMethod mAuth;
 //    private NexmoClient mClient;
 
+    private LocationEngine locationEngine;
+    private Location mLocation;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -35,24 +46,27 @@ public class ShutterService extends AccessibilityService {
 
         Log.i(TAG, "ShutterService::onCreate");
 
-//        try {
-//            SmsSubmissionResult[] responses = mClient.getSmsClient().submitMessage(new TextMessage(
-//                    "Acme Inc",
-//                    "00393479942262",
-//                    "A text message sent using the Nexmo SMS API"));
-//
-//            for (SmsSubmissionResult response : responses) {
-//                System.out.println(response);
-//                Log.i(TAG,response.toString());
-//            }
-//        }
-//        catch (IOException ie){
-//            Log.e(TAG,"Message IOException");
-//        }catch(NexmoClientException ie){
-//            Log.e(TAG,"Message NexmoClientException");
-//        }
+        LocationEngineProvider locationEngineProvider = new LocationEngineProvider(getApplicationContext());
+        locationEngine = locationEngineProvider.obtainBestLocationEngineAvailable();
+        locationEngine.setPriority(LocationEnginePriority.HIGH_ACCURACY);
+        locationEngine.activate();
 
+        Location mLocation = locationEngine.getLastLocation();
+        if (mLocation != null) {
+            Log.i(TAG, "Latitude: " + mLocation.getLatitude() + " Longitude: " + mLocation.getLongitude()
+                    + " Altitude: " + mLocation.getAltitude());
+        } else {
+            locationEngine.addLocationEngineListener(this);
+        }
+        locationEngine.requestLocationUpdates();
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (locationEngine != null) {
+            locationEngine.deactivate();
+        }
     }
 
     @Override
@@ -75,16 +89,42 @@ public class ShutterService extends AccessibilityService {
     }
 
     @Override
+    @SuppressWarnings( {"MissingPermission"})
+    public void onConnected() {
+        locationEngine.requestLocationUpdates();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if (location != null) {
+            mLocation = location;
+            Log.i(TAG, "Latitude: " + mLocation.getLatitude() + " Longitude: " + mLocation.getLongitude()
+                        + " Altitude: " + mLocation.getAltitude());
+            locationEngine.removeLocationEngineListener(this);
+        }
+    }
+
+    @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
     }
 
     private void sendMessage() {
+
+        Log.i(TAG, "Latitude: " + mLocation.getLatitude() + " Longitude: " + mLocation.getLongitude()
+                + " Altitude: " + mLocation.getAltitude() + " Time: " + mLocation.getTime());
+        String locationLink = "https://maps.google.com/?q=" + mLocation.getLatitude() + "," + mLocation.getLongitude();
+        String smsContent = "I'm in danger\n" + locationLink;
+        Log.i(TAG, "Message: " + smsContent);
         SmsManager smsManager = SmsManager.getDefault();
         smsManager.sendTextMessage("00393336147389", null,
-                "I'm in danger", null, null);
+                smsContent, null, null);
     }
 
     private void callEmergencyContact(){
+        Log.i(TAG, "Latitude: " + mLocation.getLatitude() + " Longitude: " + mLocation.getLongitude()
+                + " Altitude: " + mLocation.getAltitude());
+        String locationLink = "https://maps.google.com/?q=" + mLocation.getLatitude() + "," + mLocation.getLongitude();
+        Log.i(TAG, locationLink);
         Intent Intent = new Intent();
         Intent.setAction(Intent.ACTION_CALL);
         Intent.setData(Uri.parse("tel:00393336147389"));
