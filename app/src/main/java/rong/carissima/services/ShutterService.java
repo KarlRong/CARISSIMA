@@ -53,12 +53,11 @@ public class ShutterService extends AccessibilityService
 
         Location mLocation = locationEngine.getLastLocation();
         if (mLocation != null) {
-            Log.i(TAG, "Latitude: " + mLocation.getLatitude() + " Longitude: " + mLocation.getLongitude()
+            Log.i(TAG, "LastLocation: " + "Latitude: " + mLocation.getLatitude() + " Longitude: " + mLocation.getLongitude()
                     + " Altitude: " + mLocation.getAltitude());
-        } else {
-            locationEngine.addLocationEngineListener(this);
         }
-        locationEngine.requestLocationUpdates();
+        locationEngine.addLocationEngineListener(this);
+
     }
 
     @Override
@@ -98,9 +97,9 @@ public class ShutterService extends AccessibilityService
     public void onLocationChanged(Location location) {
         if (location != null) {
             mLocation = location;
-            Log.i(TAG, "Latitude: " + mLocation.getLatitude() + " Longitude: " + mLocation.getLongitude()
+            Log.i(TAG, "onLocationChanged " + "Latitude: " + mLocation.getLatitude() + " Longitude: " + mLocation.getLongitude()
                         + " Altitude: " + mLocation.getAltitude());
-            locationEngine.removeLocationEngineListener(this);
+//            locationEngine.requestLocationUpdates();
         }
     }
 
@@ -110,8 +109,8 @@ public class ShutterService extends AccessibilityService
 
     private void sendMessage() {
 
-        Log.i(TAG, "Latitude: " + mLocation.getLatitude() + " Longitude: " + mLocation.getLongitude()
-                + " Altitude: " + mLocation.getAltitude() + " Time: " + mLocation.getTime());
+        Log.i(TAG, "sendMessage: " + "Latitude: " + mLocation.getLatitude() + " Longitude: " + mLocation.getLongitude()
+                + " Altitud e: " + mLocation.getAltitude() + " Time: " + mLocation.getTime());
         String locationLink = "https://maps.google.com/?q=" + mLocation.getLatitude() + "," + mLocation.getLongitude();
         String smsContent = "I'm in danger\n" + locationLink;
         Log.i(TAG, "Message: " + smsContent);
@@ -121,7 +120,7 @@ public class ShutterService extends AccessibilityService
     }
 
     private void callEmergencyContact(){
-        Log.i(TAG, "Latitude: " + mLocation.getLatitude() + " Longitude: " + mLocation.getLongitude()
+        Log.i(TAG, "callContact: " + "Latitude: " + mLocation.getLatitude() + " Longitude: " + mLocation.getLongitude()
                 + " Altitude: " + mLocation.getAltitude());
         String locationLink = "https://maps.google.com/?q=" + mLocation.getLatitude() + "," + mLocation.getLongitude();
         Log.i(TAG, locationLink);
