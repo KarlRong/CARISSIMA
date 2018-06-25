@@ -18,7 +18,7 @@ public class SharedPreferencesHelper {
      * 保存手机里面的名字
      */private SharedPreferences.Editor editor;
 
-    public SharedPreferencesHelper(Context context,String FILE_NAME) {
+    public SharedPreferencesHelper(Context context, String FILE_NAME) {
         sharedPreferences = context.getSharedPreferences(FILE_NAME,
                 Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -44,42 +44,63 @@ public class SharedPreferencesHelper {
         editor.commit();
     }
 
-    public final static String CONTACT_NUMS  = "ContactNums";
+    public final static String CONTACT_NUMS = "ContactNums";
     public final static String ITEM = "Item";
     public final static String CONTACT_ID = "ContactId";
     public final static String CONTACT_NAME = "ContactName";
     public final static String CONTACT_NUMBER = "ContactNumber";
 
-    public void putContact(String contactId, String contactName, String contactNumber){
+    public void putContact(String contactId, String contactName, String contactNumber) {
         Integer nums = 0;
-        if(contain(CONTACT_NUMS)){
-            nums = (Integer)getSharedPreference(CONTACT_NUMS, 0);
+        if (contain(CONTACT_NUMS)) {
+            nums = (Integer) getSharedPreference(CONTACT_NUMS, 0);
+        }
+        for (int i = 1; i <= nums; i++) {
+            int index = i;
+            String iContactId = getSharedPreference(ITEM + index + CONTACT_ID, "").toString().trim();
+            if (contactId.equals(iContactId)) {
+                put(ITEM + i + CONTACT_ID, contactId);
+                put(ITEM + i + CONTACT_NAME, contactName);
+                put(ITEM + i + CONTACT_NUMBER, contactNumber);
+                return;
+            }
         }
         int index = nums + 1;
-        put(ITEM + contactId + CONTACT_ID, contactId);
-        put(ITEM + contactId + CONTACT_NAME, contactName);
-        put(ITEM + contactId + CONTACT_NUMBER, contactNumber);
+        put(ITEM + index + CONTACT_ID, contactId);
+        put(ITEM + index + CONTACT_NAME, contactName);
+        put(ITEM + index + CONTACT_NUMBER, contactNumber);
         nums = index;
         put(CONTACT_NUMS, nums);
     }
 
-    public void removeContact(String rmContactId){
+
+    public void removeContact(String rmContactId) {
         Integer nums = 0;
-        if(contain(CONTACT_NUMS)){
-            nums = (Integer)getSharedPreference(CONTACT_NUMS, 0);
-        }else{
+        if (contain(CONTACT_NUMS)) {
+            nums = (Integer) getSharedPreference(CONTACT_NUMS, 0);
+        } else {
             return;
         }
-        for(int i = 1; i <= nums; i++){
+        int deletNums = 0;
+        for (int i = 1; i <= nums; i++) {
             int index = i;
             String contactId = getSharedPreference(ITEM + index + CONTACT_ID, "").toString().trim();
-            if(contactId == rmContactId){
+            if (contactId == rmContactId) {
                 remove(ITEM + index + CONTACT_ID);
                 remove(ITEM + index + CONTACT_NAME);
                 remove(ITEM + index + CONTACT_NUMBER);
+                for(int j = i; j < nums; j++){
+                    int k = j + 1;
+                    put(ITEM + j + CONTACT_ID, getSharedPreference(ITEM + k + CONTACT_ID, "").toString().trim());
+                    put(ITEM + j + CONTACT_NAME, getSharedPreference(ITEM + k + CONTACT_NAME, "").toString().trim());
+                    put(ITEM + j + CONTACT_NUMBER, getSharedPreference(ITEM + k + CONTACT_NUMBER, "").toString().trim());
+                }
+                nums = nums - 1;
             }
         }
+        put(CONTACT_NUMS, nums);
     }
+
     /**
      * 获取保存的数据
      */
@@ -99,13 +120,13 @@ public class SharedPreferencesHelper {
         }
     }
 
-    public ArrayList<String[]> getContacts(){
+    public ArrayList<String[]> getContacts() {
         ArrayList<String[]> contactsList = new ArrayList();
-        if(!contain(CONTACT_NUMS)){
+        if (!contain(CONTACT_NUMS)) {
             return contactsList;
         }
-        int nums = (Integer)getSharedPreference(CONTACT_NUMS, 0);
-        for(int i = 1; i <= nums; i++){
+        int nums = (Integer) getSharedPreference(CONTACT_NUMS, 0);
+        for (int i = 1; i <= nums; i++) {
             int index = i;
             String contactId = getSharedPreference(ITEM + index + CONTACT_ID, "").toString().trim();
             String contactName = getSharedPreference(ITEM + index + CONTACT_NAME, "").toString().trim();

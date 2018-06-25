@@ -37,21 +37,33 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import rong.carissima.R;
+import rong.carissima.util.SharedPreferencesHelper;
 import zuo.biao.library.base.BaseActivity;
+import zuo.biao.library.model.Entry;
+import zuo.biao.library.util.Log;
 
 /**
  * Allows user to create a new pet or edit an existing one.
  */
-public class EditorActivity extends BaseActivity{
+public class EditorActivity extends BaseActivity implements View.OnClickListener {
 
     /** EditText field to enter the pet's name */
     private EditText mNameEditText;
 
     /** EditText field to enter the pet's breed */
     private EditText mBreedEditText;
+
+    private ImageView mDeleteButton;
+    private ImageView mSaveView;
 
     /** Boolean flag that keeps track of whether the pet has been edited (true) or not (false) */
     private boolean mPetHasChanged = false;
@@ -83,6 +95,7 @@ public class EditorActivity extends BaseActivity{
         }
     };
 
+    private long userId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +104,11 @@ public class EditorActivity extends BaseActivity{
         // Examine the intent that was used to launch this activity,
         // in order to figure out if we're creating a new pet or editing an existing one.
         Intent intent = getIntent();
+        userId = intent.getLongExtra(INTENT_ID, userId);
+        if (userId < 0) {
+            finishWithError("User doesn't exist");
+            return;
+        }
 
         //功能归类分区方法，必须调用<<<<<<<<<<
         initView();
@@ -105,11 +123,35 @@ public class EditorActivity extends BaseActivity{
         mNameEditText = (EditText) findViewById(R.id.edit_pet_name);
         mBreedEditText = (EditText) findViewById(R.id.edit_pet_breed);
 
+        mDeleteButton = (ImageView) findView(R.id.btn_delete);
+        mSaveView = (ImageView) findView(R.id.btn_save);
     }
+
+    private SharedPreferencesHelper sharedPreferencesHelper;
+    public String mContactId;
+    public String mContactName;
+    public String mContactNumber;
 
     public void initData(){
+        runUiThread(new Runnable() {
+            @Override
+            public void run() {
 
-    }
+                dismissProgressDialog();
+                sharedPreferencesHelper = new SharedPreferencesHelper(
+                        getActivity(), SharedPreferencesHelper.CONTACTS_FILE_NAME);
+
+                ArrayList<String[]> contactsList = sharedPreferencesHelper.getContacts();
+                String[] contact = contactsList.get((int) userId);
+                Log.i(TAG, "ContactID: " + contact[0] + " ContactName: " + contact[1] + "ContactNumber: " + contact[2]);
+                mContactId = contact[0];
+                mContactName = contact[1];
+                mContactNumber = contact[2];
+                mNameEditText.setText(mContactName);
+                mBreedEditText.setText(mContactNumber);
+                }
+            });
+        }
 
     public void initEvent(){
         // Setup OnTouchListeners on all the input fields, so we can determine if the user
@@ -117,6 +159,9 @@ public class EditorActivity extends BaseActivity{
         // or not, if the user tries to leave the editor without saving.
         mNameEditText.setOnTouchListener(mTouchListener);
         mBreedEditText.setOnTouchListener(mTouchListener);
+
+        mDeleteButton.setOnClickListener(this);
+        mSaveView.setOnClickListener(this);
     }
     /**
      * Get user input from editor and save pet into database.
@@ -124,8 +169,10 @@ public class EditorActivity extends BaseActivity{
     private void savePet() {
         // Read from input fields
         // Use trim to eliminate leading or trailing white space
-        String nameString = mNameEditText.getText().toString().trim();
-        String breedString = mBreedEditText.getText().toString().trim();
+        mContactName = mNameEditText.getText().toString().trim();
+        mContactNumber = mBreedEditText.getText().toString().trim();
+
+        sharedPreferencesHelper.putContact(mContactId, mContactName, mContactNumber);
     }
 
     @Override
@@ -136,30 +183,26 @@ public class EditorActivity extends BaseActivity{
         return true;
     }
 
-
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // User clicked on a menu option in the app bar overflow menu
-        switch (item.getItemId()) {
-            // Respond to a click on the "Save" menu option
-            case R.id.action_save:
+    public void onClick(View v) {//直接调用不会显示v被点击效果
+        switch (v.getId()) {
+            case R.id.btn_save:
                 // Save pet to database
                 savePet();
                 // Exit activity
                 finish();
-                return true;
+                break;
             // Respond to a click on the "Delete" menu option
-            case R.id.action_delete:
+            case R.id.btn_delete:
                 // Pop up confirmation dialog for deletion
                 showDeleteConfirmationDialog();
-                return true;
+                break;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
                 // If the pet hasn't changed, continue with navigating up to parent activity
                 // which is the {@link CatalogActivity}.
                 if (!mPetHasChanged) {
                     NavUtils.navigateUpFromSameTask(EditorActivity.this);
-                    return true;
                 }
 
                 // Otherwise if there are unsaved changes, setup a dialog to warn the user.
@@ -176,9 +219,8 @@ public class EditorActivity extends BaseActivity{
 
                 // Show a dialog that notifies the user they have unsaved changes
                 showUnsavedChangesDialog(discardButtonClickListener);
-                return true;
+                break;
         }
-        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -269,6 +311,8 @@ public class EditorActivity extends BaseActivity{
      */
     private void deletePet() {
         // Close the activity
+        sharedPreferencesHelper.removeContact(mContactId);
         finish();
+
     }
 }
