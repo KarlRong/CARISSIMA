@@ -56,7 +56,7 @@ import zuo.biao.library.util.Log;
  * @author Lemon
  * @use MainTabActivity.createIntent(...)
  */
-public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDragListener {
+public class MainTabActivity extends BaseBottomTabActivity {
 		private static final String TAG = "MainTabActivity";
 
 
@@ -92,7 +92,7 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_tab_activity, this);
+        setContentView(R.layout.main_tab_activity);
 
 
       	//功能归类分区方法，必须调用<<<<<<<<<<
@@ -267,24 +267,7 @@ public class MainTabActivity extends BaseBottomTabActivity implements OnBottomDr
         };
 	}
 
-	@Override
-	public void onDragBottom(boolean rightToLeft) {
-		//将Activity的onDragBottom事件传递到Fragment，非必要<<<<<<<<<<<<<<<<<<<<<<<<<<<
-		switch (currentPosition) {
-		case 2:
-			if (demoTabFragment != null) {
-				if (rightToLeft) {
-//					demoTabFragment.selectMan();
-				} else {
-//					demoTabFragment.selectPlace();
-				}
-			}
-			break;
-		default:
-			break;
-		}
-		//将Activity的onDragBottom事件传递到Fragment，非必要>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	}
+
 
 
 	// 系统自带监听方法<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

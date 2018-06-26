@@ -30,7 +30,7 @@ import android.os.HandlerThread;
  * 		在使用ThreadManager的Context被销毁前ThreadManager.getInstance().destroyThread(...);
  *      在应用退出前ThreadManager.getInstance().finish();
  */
-public class ThreadManager {
+	public class ThreadManager {
 	private static final String TAG = "ThreadManager";
 
 
