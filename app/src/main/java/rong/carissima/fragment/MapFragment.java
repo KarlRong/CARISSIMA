@@ -278,14 +278,17 @@ public class MapFragment extends BaseFragment implements
 //         };
 //        Timer timer = new Timer();
 //        timer.schedule(task, 1000);
+        trickyFlag = false;
         new Handler().postDelayed(new Runnable(){
             public void run() {
                 //execute the task
                 refreshHeatLayer();
+                trickyFlag = true;
             }
         }, 1500);
     }
 
+    private boolean trickyFlag = false;
     @SuppressWarnings( {"MissingPermission"})
     private void enableLocationPlugin() {
         // Check if permissions are enabled and if not request
@@ -865,7 +868,9 @@ public class MapFragment extends BaseFragment implements
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     firebasePoint newpoint =  dataSnapshot.getValue(firebasePoint.class);
-                    addNewMarker(newpoint.getLatitude(), newpoint.getLongitude());
+                    if(!trickyFlag) {
+                        addNewMarker(newpoint.getLatitude(), newpoint.getLongitude());
+                    }
 //                    refreshHeatLayer();
                 }
 
