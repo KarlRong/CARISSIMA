@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
+import com.jaeger.library.StatusBarUtil;
+
 import rong.carissima.R;
 import zuo.biao.library.base.BaseActivity;
 import zuo.biao.library.interfaces.OnBottomDragListener;
@@ -58,7 +60,7 @@ public class SettingActivity extends BaseActivity implements OnBottomDragListene
 	private ImageView[] ivSettings;
 	@Override
 	public void initView() {//必须调用
-
+		StatusBarUtil.setTranslucent(this, 50);
 		ivSettings = new ImageView[7];
 		ivSettings[0] = findView(R.id.ivSettingCache);
 		ivSettings[1] = findView(R.id.ivSettingPreload);
@@ -188,7 +190,7 @@ public class SettingActivity extends BaseActivity implements OnBottomDragListene
 	@Override
 	public void finish() {
 		if (isSettingChanged) {
-			showProgressDialog("正在保存设置，请稍后...");
+			showProgressDialog("Saving Preference...");
 			runThread(TAG, new Runnable() {
 
 				@Override

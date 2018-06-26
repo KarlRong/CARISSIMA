@@ -3,7 +3,7 @@
 
     <color name="activity_bg">#f7f8f8</color>
     <color name="topbar_bg">#8e24aa</color>
-    <color name="topbar_bg_white">#ffffffff</color>
+    <color name="topbar_bg_white">#ffffff</color>
     <color name="topbar_bg_black">#272e2a</color>
     <color name="divider">#dddddd</color>
     <color name="indicator_enter">#999999</color>

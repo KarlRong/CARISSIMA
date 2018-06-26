@@ -42,6 +42,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.jaeger.library.StatusBarUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,6 +121,7 @@ public class EditorActivity extends BaseActivity implements View.OnClickListener
 
 
     public void initView(){
+        StatusBarUtil.setTranslucent(this, 50);
         // Find all relevant views that we will need to read user input from
         mNameEditText = (EditText) findViewById(R.id.edit_pet_name);
         mBreedEditText = (EditText) findViewById(R.id.edit_pet_breed);

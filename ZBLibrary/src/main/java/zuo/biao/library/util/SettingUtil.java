@@ -62,7 +62,7 @@ public final class SettingUtil {
 
 	public static boolean voice = true;//开启通知声
 	public static boolean vibrate = true;//开启震动
-	public static boolean noDisturb = false;//夜间防打扰
+	public static boolean noDisturb = true;//夜间防打扰
 
 	public static boolean isOnTestMode = false;//测试模式
 	public static boolean isFirstStart = true;//第一次打开应用
@@ -145,7 +145,7 @@ public final class SettingUtil {
 			return defaultValue;
 		}
 
-		return context.getSharedPreferences(APP_SETTING, Context.MODE_PRIVATE).getBoolean(key, defaultValue);
+		return context.getSharedPreferences(APP_SETTING, Context.MODE_MULTI_PROCESS).getBoolean(key, defaultValue);
 	}
 
 
@@ -158,7 +158,7 @@ public final class SettingUtil {
 			return;
 		}
 
-		Editor editor = context.getSharedPreferences(APP_SETTING, Context.MODE_PRIVATE).edit();
+		Editor editor = context.getSharedPreferences(APP_SETTING, Context.MODE_MULTI_PROCESS).edit();
 		editor.clear();
 		for (int i = 0; i < values.length; i++) {
 			editor.putBoolean(KEYS[i], values[i]);
@@ -179,7 +179,7 @@ public final class SettingUtil {
 			return;
 		}
 
-		context.getSharedPreferences(APP_SETTING, Context.MODE_PRIVATE)
+		context.getSharedPreferences(APP_SETTING, Context.MODE_MULTI_PROCESS)
 		.edit()
 		.remove(key)//防止因类型不同导致崩溃
 		.putBoolean(key, value)
@@ -266,7 +266,7 @@ public final class SettingUtil {
 	 * @return
 	 */
 	public static String getServerAddress(boolean isTest, boolean isHttps) {
-		SharedPreferences sdf = context.getSharedPreferences(APP_SETTING, Context.MODE_PRIVATE);
+		SharedPreferences sdf = context.getSharedPreferences(APP_SETTING, Context.MODE_MULTI_PROCESS);
 		if (sdf == null) {
 			return null;
 		}

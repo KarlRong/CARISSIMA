@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.zxing.WriterException;
+import com.jaeger.library.StatusBarUtil;
 import com.zxing.encoding.EncodingHandler;
 
 import java.io.File;
@@ -103,6 +104,8 @@ public class AboutCarissimaActivity extends BaseActivity implements OnClickListe
 
 	@Override
 	public void initView() {
+
+		StatusBarUtil.setTranslucent(this, 50);
 		tvAboutAppInfo = findView(R.id.tvAboutAppInfo);
 	}
 

@@ -20,7 +20,7 @@ public class SharedPreferencesHelper {
 
     public SharedPreferencesHelper(Context context, String FILE_NAME) {
         sharedPreferences = context.getSharedPreferences(FILE_NAME,
-                Context.MODE_PRIVATE);
+                Context.MODE_MULTI_PROCESS);
         editor = sharedPreferences.edit();
     }
 

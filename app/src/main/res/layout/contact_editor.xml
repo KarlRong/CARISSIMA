@@ -23,9 +23,7 @@
     <!-- Overview category -->
     <RelativeLayout
         style="@style/topbar_bg"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:paddingTop="24dp">
+        >
 
         <ImageButton
             style="@style/topbar_return_img"
