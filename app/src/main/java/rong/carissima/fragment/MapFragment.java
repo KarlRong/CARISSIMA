@@ -486,6 +486,12 @@ public class MapFragment extends BaseFragment implements
     private void addHeatmapDataSource() {
 //        mapboxMap.addSource(new GeoJsonSource(HEATMAP_SOURCE_ID,
 //                loadGeoJsonFromAsset("la_heatmap_styling_points.geojson")));
+        if(mapboxMap.getLayer(HEATMAP_LAYER_ID) != null){
+            mapboxMap.removeLayer(HEATMAP_LAYER_ID);
+        }
+        if(mapboxMap.getSource(HEATMAP_SOURCE_ID) != null){
+            mapboxMap.removeSource(HEATMAP_SOURCE_ID);
+        }
         try {
             mapboxMap.addSource(new GeoJsonSource(HEATMAP_SOURCE_ID, mGeoFeatures.toJSON().toString()));
 
@@ -804,7 +810,6 @@ public class MapFragment extends BaseFragment implements
                 destinationPosition = Point.fromLngLat(destinationCoord.getLongitude(), destinationCoord.getLatitude());
                 originPosition = Point.fromLngLat(originCoord.getLongitude(), originCoord.getLatitude());
                 getRoute(originPosition, destinationPosition);
-//                refreshHeatLayer();
             }
         });
     }
@@ -814,10 +819,10 @@ public class MapFragment extends BaseFragment implements
             @Override
             public void onMapLongClick(@NonNull LatLng point) {
                 Log.i(TAG, "onMapLongClick");
-//                addNewMarker(point.getLatitude(), point.getLongitude());
+                addNewMarker(point.getLatitude(), point.getLongitude());
                 firebasePoint fpoint = new firebasePoint(point.getLatitude(), point.getLongitude());
                 mMarkersDatabaseReference.push().setValue(fpoint);
-//                getActivity().finish();
+                refreshHeatLayer();
             }
         });
     }
