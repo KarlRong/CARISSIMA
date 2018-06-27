@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/service_background"
         android:scaleType="centerCrop"
-        android:src="@drawable/service_background"
+        android:src="@drawable/background_jpg_s"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,20 +19,19 @@
 
     <ImageView
         android:id="@+id/iv_states_service"
-        android:layout_width="149dp"
-        android:layout_height="138dp"
+        android:layout_width="150dp"
+        android:layout_height="170dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:contentDescription="@string/show_bluetooth_state"
         android:foregroundGravity="center_vertical|center_horizontal"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         android:src="@drawable/states_selector"
         app:layout_constraintBottom_toBottomOf="@+id/im_background"
         app:layout_constraintEnd_toEndOf="@+id/im_background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/show_bluetooth_state" />
+        app:layout_constraintVertical_bias="0.376" />
 </android.support.constraint.ConstraintLayout>

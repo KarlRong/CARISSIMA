@@ -86,6 +86,7 @@
                     <ImageView
                         android:id="@+id/ivSettingVoice"
                         style="@style/content_item_rt_img"
+                        android:layout_width="60dp"
                         android:paddingRight="@dimen/item_padding_right"
                         android:src="@drawable/on" />
                 </LinearLayout>
@@ -102,6 +103,7 @@
                     <ImageView
                         android:id="@+id/ivSettingVibrate"
                         style="@style/content_item_rt_img"
+                        android:layout_width="60dp"
                         android:paddingRight="@dimen/item_padding_right"
                         android:src="@drawable/on" />
                 </LinearLayout>
@@ -118,6 +120,7 @@
                     <ImageView
                         android:id="@+id/ivSettingNoDisturb"
                         style="@style/content_item_rt_img"
+                        android:layout_width="60dp"
                         android:paddingRight="@dimen/item_padding_right"
                         android:src="@drawable/on" />
                 </LinearLayout>

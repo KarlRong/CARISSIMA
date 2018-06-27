@@ -50,12 +50,16 @@
             <ImageView
                 android:id="@+id/ivBottomTabTab0"
                 style="@style/bottom_tab_iv"
+                android:layout_height="26dp"
+                android:layout_marginTop="8dp"
+                android:scaleType="fitCenter"
                 android:src="@drawable/service_seletor" />
 
             <TextView
                 android:id="@+id/tvBottomTabTab0"
                 style="@style/bottom_tab_tv"
-                android:text="Service" />
+                android:text="Service"
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
@@ -67,12 +71,16 @@
             <ImageView
                 android:id="@+id/ivBottomTabTab1"
                 style="@style/bottom_tab_iv"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
+                android:scaleType="fitCenter"
                 android:src="@drawable/map_selector" />
 
             <TextView
                 android:id="@+id/tvBottomTabTab1"
                 style="@style/bottom_tab_tv"
-                android:text="Map" />
+                android:text="Map"
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
@@ -84,12 +92,16 @@
             <ImageView
                 android:id="@+id/ivBottomTabTab2"
                 style="@style/bottom_tab_iv"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
+                android:scaleType="fitCenter"
                 android:src="@drawable/contacts_selector" />
 
             <TextView
                 android:id="@+id/tvBottomTabTab2"
                 style="@style/bottom_tab_tv"
-                android:text="Contacts" />
+                android:text="Contacts"
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
@@ -101,12 +113,16 @@
             <ImageView
                 android:id="@+id/ivBottomTabTab3"
                 style="@style/bottom_tab_iv"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
+                android:scaleType="fitCenter"
                 android:src="@drawable/setting_selector" />
 
             <TextView
                 android:id="@+id/tvBottomTabTab3"
                 style="@style/bottom_tab_tv"
-                android:text="Settings" />
+                android:text="Settings"
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 
